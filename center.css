@@ -1,0 +1,109 @@
+/* 水平1 宽度，margin 0 auto*/
+#center1{
+    width: 200px;
+    margin: 0 auto;
+    background-color: pink;
+}
+
+/* 水平2 text-align center，子inline-block */
+.container {
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    font-size: 0;
+  }
+.box {
+    display: inline-block;
+    width: 500px;
+    height: 400px;
+    background-color: pink;
+  }
+
+/* absolut，宽高，上下左右0，margin auto */
+#center3{
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: pink; /*方便看效果*/
+  }
+
+/* absolute，宽高，topleft，负margin */
+#center4{
+    position:absolute;/*绝对定位*/
+    width:500px;
+    height:300px;
+    top:50%;
+    left:50%;
+    margin:-150px -250px;/*外边距为自身宽高的一半*/
+    background-color:pink;/*方便看效果*/
+}
+
+/* absolute，topleft，transform, 宽高不定*/
+#center5{
+    position: absolute; /*相对定位或绝对定位均可*/
+    width: 500px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: pink; /*方便看效果*/
+  }
+
+/* flex 宽高不定*/
+#center6 {
+    display: flex;
+    align-items: center; /*垂直居中*/
+    justify-content: center; /*水平居中*/
+  }
+#box6{
+    width: 100px;
+    height: 100px;
+    background-color: pink; /*方便看效果*/
+  }
+
+/* 三角形 */
+#sanjiaoxing {
+    width: 0;
+    height: 0;
+    border-width: 200px;
+    border-style: solid;
+    border-color: transparent transparent red transparent;
+}
+
+/* 多列等高布局 */
+.Article {
+    overflow: hidden;
+  }
+  
+  .Article>li {
+    float: left;
+    margin: 0 10px -9999px 0;
+    padding-bottom: 9999px;
+    background: #4577dc;
+    width: 200px;
+    color: #fff;
+  }
+  
+  .Article>li>p {
+    padding: 10px;
+  }
+
+  #parent{
+      height: 100px;
+      width: 100px;
+      background-color: red;
+      padding: 10px;
+      border: 4px;
+      margin: 10px;
+  }
+
+  #child{
+    /* width: 100%; */
+    width: auto;
+    height: 50px;
+    background-color: black;
+  }
