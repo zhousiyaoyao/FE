@@ -23,6 +23,25 @@
 // }
 // console.log(word1 + ' ' + 'break' + ' ' + word2)
 
-var res = {er:'2',ew:'3'}
-var result = Object.keys(res).sort((a,b)=>res[b]-res[a])
-console.log(result.join(' '))
+var a = [{id:1, w:2},{id:1, w:3},{id:2, w:4},{id:2, w:11},{id:2, w:12},{id:2, w:11},{id:2, w:13}]
+res = {}
+for(let key in a){
+	if (a[key].id in res){
+		if(a[key].w > res[a[key].id]){
+			res[a[key].id] = a[key].w
+		}
+	} 
+	else{
+		res[a[key].id] = a[key].w
+	}
+}
+console.log(res)
+let result = new Array()
+for(let key in res){
+	console.log(key,res[key])
+	tmp = {}
+	tmp.id = key
+	tmp.w = res[key]
+	result.push(tmp)
+}
+console.log(result)

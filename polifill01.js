@@ -5,6 +5,7 @@ function parent(name){
 parent.prototype.getName = function(){
     console.log(this.name)
 }
+// new
 function new_new(){
     let obj = {}
     const Constructor = [].shift.call(arguments);// 取出第一个参数为构造函数
@@ -12,7 +13,7 @@ function new_new(){
     var result = Constructor.apply(obj, arguments);
     return typeof result === 'object' ? result : obj;
 }
-
+// call
 Function.prototype.call_call = function(context){
     var context = context || window
     context.fn = this;
@@ -24,7 +25,7 @@ Function.prototype.call_call = function(context){
     delete context.fn
     return result
 }
-
+// apply
 Function.prototype.apply_apply = function (context, arr) {
     var context = Object(context) || window;
     context.fn = this;
@@ -44,7 +45,7 @@ Function.prototype.apply_apply = function (context, arr) {
     delete context.fn
     return result;
 }
-
+// bind
 Function.prototype.bind_bind = function (context) {
 
     if (typeof this !== "function") {
@@ -64,6 +65,20 @@ Function.prototype.bind_bind = function (context) {
     fNOP.prototype = this.prototype;
     fBound.prototype = new fNOP();
     return fBound;
+}
+// instanceof
+function instance_instance(left, right){
+    let proto = Object.getPrototypeOf(left)
+    let prototype = right.prototype
+    while(true){
+        if(!proto){
+            return false
+        }
+        if(proto === prototype){
+            return true
+        } 
+        proto = Object.getPrototypeOf(proto)
+    }
 }
 
 var p = new_new(parent,'ssss')

@@ -10,6 +10,32 @@ xhr.onreadystatechange = () => {
 }
 xhr.send()
 
+// promise版ajax
+// 0表示没调用open，1表示没调用send，2表示已发送，3表示处理中，4表示响应完成
+function getJson(url){
+	let promise = new Promise(function(resolve,reject){
+		let xhr = new XMLHttpRequest()
+		xhr.open("GET",url,true)
+		xhr.onreadystatechange = function(){
+			if(this.readyState !== 4) return;
+			if(this.status === 200){
+				resolve(this.response)
+			}else{
+				reject(new Error(this.statusText))
+			}
+		}
+		xhr.onerror = function(){
+			reject(new Error(this.statusText))
+		}
+		xhr.setRequestHeader("Accept", "application/json")
+		// xhr.setRequestHeader("If-Modified-Since","0")  加协商缓存
+		// xhr.setRequestHeader("Cache-Control","no-cache") 加强缓存
+		// xhr.withCredentials = true;  携带cookie
+		xhr.send(null)
+	})
+	return promise
+}
+
 //2. jsonp 在html页面中通过相应的标签从不同域名下加载静态资源文件是被浏览器允许的
 // 一般，我们可以动态的创建script标签，再去请求一个带参网址来实现跨域通信
 var script = document.createElement("script")
@@ -152,6 +178,9 @@ function add(num) {
 	return twwo;
 }
 console.log(add(1)(2)(3).valueOf())
+
+// 柯里化
+
 
 // 8.1 美团面试题
 var f1 = (x, y)=> console.log(x, y)
@@ -565,3 +594,8 @@ console.log(child1)
 // data[1]();
 // data[2]();s
 
+// 类数组转数组
+Array.prototype.slice.call(arrayLike);
+Array.prototype.splice.call(arrayLike, 0);
+Array.prototype.concat.apply([], arrayLike);
+Array.from(arrayLike);
