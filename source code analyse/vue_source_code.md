@@ -118,6 +118,8 @@ vue实例 -> _init -> initstate -> initDate -> proxy把data绑定到vm._data (th
 $mount -> 没传template拿el，传了template拿template -> 得到模版字符串 -> parse成抽象语法树 -> 抽象语法书优化加static -> generate render code,得到render函数
        -> 传入了render方法，直接生成render函数，好处是不会出现使用插值的时候，{{message}}的情况，因为会render执行结束才替换message，render会替换el
 
+------响应式在这里开始------------
+
 ### render到VNode的生成
 1. 调用 render.call(vm._renderProxy, vm.$createElement)函数并返回生成的虚拟节点(vnode)，createElement函数生成vnode
 2. createElement函数接受参数：vm实例，tag标签，data，children等
@@ -143,10 +145,54 @@ runtime和runtimeonly的区别
 
 # vue双向绑定原理，响应式解析
 假设time是data的属性（Model），绑定了一个{{time}} （View）,time每一秒钟加1，没有dom操作，但视图也会加1
-1. 通过Observer对data进行监听，提供订阅某个数据项变化的能力（view改变Model，input标签监听input事件就行）
+1. 通过Observer对data进行监听，提供订阅某个数据项变化的能力（view改变Model，input标签监听input事件就行，这个简单）
 2. 把template解析成一段document fragment，解析其中的指令，得到每一个指令依赖的数据项和update方法
 3. 通过watcher链接以上2者，把指令中的数据依赖通过watcher订阅在对应数据的Observer Dep上
-4. 当数据变化，会触发Observer Dep上的notify方法通知对应的watcher进行update，更新DOM视图（Model改变view，基于发布订阅）
+4. 当数据变化，会触发Observer Dep上的notify方法通知对应的watcher进行update，更新DOM视图（Model改变view，这个是重点）
+
+proxy不是真的proxy，只是通过object.defineProperty
+
+### 添加observer（劫持并监听所有属性，有变动，通知订阅者）
+init方法最后调用了observe
+observe创建Dep对象实例，walk方法对obj的key遍历，每个调用convert
+convert调用了defineReactive，加上get和set方法，这样属性被访问或者更新，可以追踪变化
+当Dep.target不为空时，调用dep.depend和childObj.dep.depend收集依赖
+改变data，会调用了setter方法，从而调用dep.notify通知（model - view）
+Dep类是简单观察者模式的实现。只有id属性和subs数组，存储着订阅它的watcher，Dep.target表示当前正在计算的watcher，每时刻只有一个
+depend方法把当前的dep实例加入到正在计算的watcher依赖中
+notify遍历所有的watcher，调用他们的update
+
+vue._init() -> observe(监听器) -> walk -> convert -> defineReactive -> getter and setter (数据劫持，监听到数据的变化，改变视图)
+                              -> 创建Dep(id, subs)(消息订阅器)
+            -> 属性被访问, getter, depend加入当前watcher依赖 
+            -> 数据改变setter notify遍历watcher(发布订阅)
+            -> watcher(订阅者)
+
+### 指令编译complier（扫描和解析每个节点的相关指令，并根据初始化模板数据以及初始化相应的订阅器）
+调用vm.compile对模版进行编译，变成一个document fragment，拿到el对象。
+深度遍历递归调用compileNode
+如果node.nodeType===1，表示非script普通节点，比如<p>,</div>，compileElement进行解析
+如果node.nodeType===3，表示非空的文本节点，调用compileTextNode进行解析
+对每个节点扫描，解析，将相关指令初始化为watcher，并替换模版数据或者绑定对应函数
+
+### watcher（订阅者）
+收到属性的变化，并通知执行相应函数，从而更新视图
+update改变视图，text和input
+
+### Dep 消息订阅器
+subs数组存watcher
+Dep.target表示当前watcher
+getter里把watcher加入subs
+setter里调用notify，也就是每一个watch都update
+
+model改变view的过程
+1. observer劫持监听属性，通知Dep变化
+2. Dep通知watcher变化
+3. watcher变化改变view
+4. compiler初始化为view，且把指令初始化为watcher，getter会把watcher加入到Dep的subs里，setter调用notify，触发watcher
+
+view改变model的过程
+靠v-model，获取v-model对应的属性值，赋给元素的value，设置watcher，变化触发，通知属性更改
 
 # vue路由
 
