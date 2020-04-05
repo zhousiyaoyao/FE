@@ -5,8 +5,6 @@ Object.defineProperty(obj, 'hello', {
         document.getElementById('b').innerHTML = newVal
     }
 })
-obj.hello
-obj.hello = 'abc'
 document.addEventListener('keyup',function(e){
     obj.hello = e.target.value;
 })

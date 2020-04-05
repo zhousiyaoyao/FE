@@ -1,12 +1,13 @@
-# Diff 算法
+# Diff算法
 
 ### 原因
 渲染真实DOM的开销很大，修改某个数据，可能会引起整棵树的重绘和重排，diff算法可以只更新修改的那一块
 
-1. 根据DOM树生成虚拟DOM树，JS
+1. 根据DOM树生成虚拟DOM树，和上次的虚拟dom树进行对比
 2. 某个节点变化，会变成Vnode
 3. Vnode和oldVnode对比
-4. 调用patch函数，比较新旧节点，然后给真实DOM打补丁
+4. 调用patch函数，比较新旧节点，得到差异结果
+5. 一次性对DOM进行批量操作
 
 <div>
     <p>123</p>
@@ -18,6 +19,8 @@ var Vnode = {
         {tag: 'p', text: '123'}
     ]
 }
+Vnode主要属性，tagName，props（包括id，class），children，text
+
 
 1. diff比较新旧节点，只会比较同层
 2. 当数据发送改变，set方法调用Dep.notify通知所有watcher，订阅者就会调用patch给真实DOM打补丁
@@ -73,3 +76,79 @@ new:  b e d c
 3. d匹配成功，d移到ac前面
 4. c匹配成功，c移到a前面，a删除
 5. 结果是b e d c
+
+# 虚拟DOM
+目的：提高页面渲染和更新的速度
+
+dom操作很昂贵
+1. dom的实现和js引擎是分离的，如果用js频繁调用dom，相当于让两个相对独立的模块发送交互，性能损耗
+2. dom操作会引起浏览器的重绘和重排，更大的性能损耗
+3. 渲染过程中一次DOM更新，整个浏览器渲染的流程会重走一遍
+
+
+# vue模版渲染过程
+
+1. 数据绑定initstate
+2. 模版编译compileToFunctions生成render,mount
+3. render生成虚拟dom，vnode
+4. diff算法得到差异patch
+5. 虚拟dom映射到真实DOM
+
+new Vue -> vm._init() -> vm.$mount(el) -> vm._render() ->vm._update(vnode)
+
+### 数据绑定(vue实例绑定data)，initstate阶段
+1. vue构造函数传入el和data，_init函数开始一系列的初始化
+2. initstate负责数据，判断有没有props，methods，computed，watch，data，有的话init没有的话observe。data init调用initDate().
+3. initDate把传入的data赋给vm._data，然后执行proxy.
+4. proxy在vm上定义get和set（通过object.defineproperty），代理vm._data上的值.
+5. _data是方法内部用的，也就是我们通过this.message获取到的值.
+
+vue实例 -> _init -> initstate -> initDate -> proxy把data绑定到vm._data (this.message === vm.data.message === vm._data.message)
+
+### 生成render函数(渲染数据到页面)$mount
+1. _init函数初始化结束判断是否传入el，传入了就执行挂载函数$mount
+2. $mount首先通过query函数对传入的el进行处理，如果有render option，直接生成，否则走程序。el是不string的话，首先定位el的dom元素，不是dom元素就创建div，return，是的话直接return这个dom元素。不是string的话，直接return el。
+3. 最终都是用一个dom元素来挂载实例，但不能挂在body和html上，因为会把dom对象替换成新的div。
+4. 模版提取：如果没传template，就获取el对应元素的全部内容，如果传了template，且以#开头，就找这个元素的innerHTML，如果是dom节点就把innerHTMl节点赋给template变量
+5. 调用compileToFunction函数将模版编译为render函数，分为parse，optimize和generate三步
+6. parse，用正则等方式对template模版进行字符串解析，得到指令，class，style等数据，形成AST抽象语法树，不断调用advance函数移动指针。把template解析成一个对象，对象包括模版的信息
+7. optimize，为节点添加static属性，表示这个节点是静态的，初始化渲染只会就不会变化，diff算法会跳过静态节点
+8. generate，把AST转化成render code, 然后成renderfunction
+
+$mount -> 没传template拿el，传了template拿template -> 得到模版字符串 -> parse成抽象语法树 -> 抽象语法书优化加static -> generate render code,得到render函数
+       -> 传入了render方法，直接生成render函数，好处是不会出现使用插值的时候，{{message}}的情况，因为会render执行结束才替换message，render会替换el
+
+### render到VNode的生成
+1. 调用 render.call(vm._renderProxy, vm.$createElement)函数并返回生成的虚拟节点(vnode)，createElement函数生成vnode
+2. createElement函数接受参数：vm实例，tag标签，data，children等
+3. vnode的参数: children，context，data，key，isStatic等
+
+render -> VNode
+
+### 虚拟DOM映射为真实DOM，patch
+1. vm._render生成vnode，vm._update把vnode渲染成真实dom节点
+2. update在初始化和更新数据时调用，会调用patch
+3. patch是createPatchFunction内部返回的一个方法
+4. createPatchFunction对象有两个属性，nodeops封装dom原始操作的方法，modules数组集合，包括dom属性对应的钩子方法
+5. createPatchFunction返回一个createElm函数来生成真实DOM，分成元素节点和组件两种方式
+6. 元素节点就是先创建根节点父元素，createElm传入vnode创建三种节点：注释节点，文本节点，元素节点，前两种直接插父节点，元素节点创建父，再创子，子插父递归，然后再把vnode创建的节点都插到根节点父元素下面
+7. 组件vnode，先创建组件，组件init钩子，初始化，实例化，mount，render，update里的patch遇到子组件，重新会init，循环，最后插入body
+8. 最后把创建的dom插入到body
+
+
+# vue小知识
+runtime和runtimeonly的区别
+1. runtimeonly是那天晚上踩坑的版本，需要webpack的vue-loader，默认带render，项目体积更小，运行速度更快，因为离线时编译
+2. runtime是常用的版本，默认不带render，包括complier，帮助把template编译成render函数，但体积大，运行时complier消耗性能
+
+# vue双向绑定原理，响应式解析
+假设time是data的属性（Model），绑定了一个{{time}} （View）,time每一秒钟加1，没有dom操作，但视图也会加1
+1. 通过Observer对data进行监听，提供订阅某个数据项变化的能力（view改变Model，input标签监听input事件就行）
+2. 把template解析成一段document fragment，解析其中的指令，得到每一个指令依赖的数据项和update方法
+3. 通过watcher链接以上2者，把指令中的数据依赖通过watcher订阅在对应数据的Observer Dep上
+4. 当数据变化，会触发Observer Dep上的notify方法通知对应的watcher进行update，更新DOM视图（Model改变view，基于发布订阅）
+
+# vue路由
+
+
+
