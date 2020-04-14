@@ -1,5 +1,3 @@
-// import { exec } from "shelljs";
-
 // 1. ajax
 // let xhr = new XMLHttpRequest();
 // xhr.withCredentials = true //请求带cookie
