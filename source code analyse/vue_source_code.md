@@ -194,7 +194,35 @@ model改变view的过程
 view改变model的过程
 靠v-model，获取v-model对应的属性值，赋给元素的value，设置watcher，变化触发，通知属性更改
 
-# vue路由
+# vue数组劫持
+const arrayProto = Array.prototype
+const arrayMethods = Object.create(arrayProto)
+;[
+  'push',
+  'pop',
+  'shift',
+  'unshift',
+  'splice',
+  'sort',
+  'reverse'
+].forEach(item=>{
+	Object.defineProperty(arrayMethods,item,{
+	    value:function mutator(){
+	    	//缓存原生方法，之后调用
+	    	const original = arrayProto[item]	
+	    	let args = Array.from(arguments)
+		    original.apply(this,args)
+	    },
+	})
+})
+function protoAugment (target,src) {
+  target.__proto__ = src
+}
+// 调用
+let obarr = []
+protoAugment(obarr, arrayMethods)
 
 
-
+subs:[watch1:[],watch2:[]]
+set: 设置Dep.target的值，收集依赖
+get：notify这个watcher，执行update
