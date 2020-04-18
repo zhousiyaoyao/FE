@@ -191,3 +191,258 @@
 //     }
 //     return res[0]
 // };
+
+
+// var validWordAbbreviation = function(word, abbr) {
+//     var wordLen = word.length;
+//     var abbrLen = 0, num = 0;
+//     var flag = 1;
+//     debugger
+//     [...abbr].forEach((value) => {
+//         // 如果是字母
+//         if (value >= 'a' && value <= 'z') {
+//             abbrLen += num + 1;
+//             num = 0;
+//             if (abbrLen > wordLen || value != word[abbrLen-1]) {
+//                 flag = 0;
+//             }
+//         }
+//         // 如果是数字
+//         else {
+//             if (num == 0 && value == '0') {
+//                 flag = 0;
+//             }
+//             num = num * 10 + (value - '0');
+//         }
+//     })
+//     return flag && abbrLen + num == wordLen;
+// };
+// var s = "internationalization"
+// var abbr = "i12iz4n"
+// console.log(validWordAbbreviation(s, abbr))
+
+// var a = [2,0]
+
+// function find(heights){
+    // heights.unshift(0)
+    // heights.push(0)
+    // var stack = []
+    // var res = 0
+    // for(var i = 0; i < heights.length; i++){
+    //     while(stack && heights[stack[stack.length - 1]] > heights[i]){
+    //         var temp = stack.pop()
+    //         var right = i
+    //         var left = stack[stack.length - 1]
+    //         res = Math.max(res, (right - left -1) * heights[temp])
+    //         console.log(res)
+    //     }
+    //     stack.push(i)
+    // }
+    // return res
+// }
+// console.log(find(a))
+
+// 用stack来存索引，维护一个单调递增的栈，如果新元素比栈顶小，栈顶就是那个中心点，左边就是栈顶左边，右边就是现在的值，右-左
+// [2,3,1,1,4]
+// [3,2,1,0,4]
+// let maxDistance = 0;
+// const len = nums.length;
+// for(let i = 0; i < len; i ++) {
+//     if(nums[i] === 0 && maxDistance <= i) break;//如果当前位置值为0，且当前能到达的最远距离还小于等于这个位置，那么它已经走不到后面了，直接退出循环就好了
+//     if(i + nums[i] > maxDistance) maxDistance = i + nums[i];
+// }
+// return maxDistance >= len- 1;
+
+// var canJump = function(nums) {
+//     var res = 0
+//     for(var i = 0; i < nums.length; i++){
+//         res = Math.max(res, nums[i] + i)
+//     }
+//     console.log(res)
+//     return res >= nums.length-1
+// };
+// console.log(canJump([2,3,1,1,4]))
+
+// var a = "aaaaaaa"
+// var b = ["aaaa","aaa"]
+// function sole(a,b){
+//     if(a.length === 1){
+//         if(b.indexOf(a) !== -1){
+//             return true
+//         }
+//         return false
+//     }
+//     var length = a.length
+//     for(var i = 0; i < length; i++){
+//         var tmp = a.slice(0,i)
+//         if (b.indexOf(tmp) !== -1){
+//             a = a.substr(i)
+//             i = 0
+//         }
+//     }
+//     console.log(a)
+// }
+// sole(a,b)
+// // sole(c,d)
+// var wordBreak = function(s, wordDict) {
+//     let dp = new Array(s.length+1).fill(false);
+//     let set = new Set(wordDict);
+//     dp[0] = true;
+//     for(let i = 1; i <= s.length; i++) {
+//         for(let j = 0; j < i; j++) {
+//             if(dp[j] && set.has(s.substring(j,i))) {
+//                 dp[i] = true;
+//                 break;
+//             }
+//         }
+//     }
+//     return dp[s.length]
+// };
+
+// n=len(s)
+// dp=[False]*(n+1)
+// dp[0]=True
+// for i in range(n):
+//     for j in range(i+1,n+1):
+//         if(dp[i] and (s[i:j] in wordDict)):
+//             dp[j]=True
+// return dp[-1]
+
+// var rob = function(nums) {
+//     var n = nums.length
+//     var a = 0
+//     var b = 0
+//     for(var i = n-1; i >= 0; i--){
+//         c = Math.max(a, nums[i] + b);
+//         b = a
+//         a = c
+//     }
+//     return c
+// }
+// console.log(rob([1,2,3,1]))
+
+// var flatten = function(root) {
+//     if(!root) return null
+//     const stack = []
+//     while(root.left || root.right || stack.length>0){
+//         if(root.right) stack.push(root.right)
+//         if(root.left){
+//             root.right = root.left
+//             root.left = null
+//         }else{
+//             root.right = stack.pop()
+//         }
+//         root = root.right
+//     }
+// };
+
+// 有右子树，push右子树，有左子树，赋值到右子树，删掉左子树，没有左子树，等于pop，根节点移动
+
+// var stack = []
+// if(!root){
+//     return null
+// }
+// while(root.left || root.right || stack){
+//     if(root.right){
+//         stack.push(root.right)
+//     }
+//     if(root.left){
+//         root.right = root.left
+//         root.left = null
+//     }else{
+//         root.right = stack.pop()
+//     }
+//     root = root.right
+// }
+
+// var rotate = function(matrix) {
+//     matrix.reverse()
+//     debugger
+//     for(var i = 0; i < matrix.length; i++){
+//         for(var j = i+1; j < matrix[0].length; j++){
+//             var temp = matrix[i][j]
+//             matrix[i][j] = matrix[j][i]
+//             matrix[j][i] = temp
+//         }
+//     }
+// };
+// const toChineseNum = (num) => {
+//     // TODO
+//     let arr = num.toString().split('').reverse(),
+//         newArr = [];
+//     let dic = ['零','一','二','三','四','五','六','七','八','九'],
+//         unit = ['','十','百','千','万','十','百','千'];
+//     console.log(arr)
+//     arr.forEach((item,index) => {
+//       if(item == 0 ){
+//          if(index == 4)newArr.unshift('万');
+//          else if(index > 0 && newArr[0] != '零' && newArr[0] != '万'){
+//            newArr.length && newArr.unshift('零');
+//          }
+//       }
+//       else newArr.unshift(dic[item] + unit[index])
+//     })
+//     return newArr.join('')
+//   }
+// rotate([
+//     [1,2,3],
+//     [4,5,6],
+//     [7,8,9]
+//   ])
+
+// function reduces(arr, callback, initial) {
+//     let i = 0;
+//     let acc = initial === undefined ? arr[i++] : initial;
+//     for (; i < arr.length; i++) {
+//         acc = callback(acc, arr[i], i, arr);
+//     }
+//     return acc;
+// }
+
+// var a = [1,2,3]
+
+
+// const toChineseNum = (num) => {
+//     var arr = num.toString().split('').reverse()
+//     console.log(arr)
+//     var number = ['零','一','二','三','四','五','六','七','八','九']
+//     var unit = ['','十','百','千','万','十','百','千'];
+//     var res = []
+//     arr.forEach((item, index) => {
+//         if(item !== '0'){
+//             var temp = number[item] + unit[index]
+//             res.push(temp)
+//         }else{
+//             if(index > 0 && res[0] != '零' && res[0] != '万'){
+//                 res.length && res.push('零');
+//             }
+//             if(index === 4){
+//                 res.push('万')
+//             }
+//         }
+//     })
+//     return res.reverse().join('')
+// }
+
+// console.log(toChineseNum(120000))
+
+
+const safeGet = (data, path) => {
+    /* TODO */
+    var paths = path.split(".")
+    var result = data
+    while(paths.length){
+        var temp = paths.shift()
+        result = result[temp]
+        if(!result){
+            return undefined
+        }
+    }
+    return result
+}
+
+var data = { a: { b: { c: 'ScriptOJ' } } }
+
+console.log(safeGet(data, 'a.b.c')) // => scriptoj
+// safeGet(data, 'a.b.c.d') // => 返回 undefined
+// safeGet(data, 'a.b.c.d.e.f.g') // => 返回 undefined
