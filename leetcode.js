@@ -447,3 +447,45 @@
 // safeGet(data, 'a.b.c.d') // => 返回 undefined
 // safeGet(data, 'a.b.c.d.e.f.g') // => 返回 undefined
 
+// const partition3way = (arr) =>{
+//     var start = 0
+//     var end = arr.length - 1
+//     var  i = 0 
+//     var pivot = arr[0]
+//     var swap = (a, i, j) => [a[i],a[j]] = [a[j],a[i]]
+//     while(i <= end){
+//         if(arr[i] < pivot){
+//             swap(arr, start++, i++)
+//         }
+//         else if(arr[i] > pivot){
+//             swap(arr, i, end--)
+//         }else{
+//             i++
+//         }
+//     }
+// }
+// const arr = [3, 1, 3, 6, 2, 3, 4, 5]
+// partition3way(arr)
+// console.log(arr)
+
+function partition(arr){
+    var start = 0
+    var end = arr.length - 1
+    var pivot = arr[0]
+    while(start < end){
+        while(arr[end] > pivot && start < end){
+            end--
+        }
+        arr[start] = arr[end]
+        while(arr[start] < pivot && start < end){
+            start++
+        }
+        arr[end] = arr[start]
+    }
+    arr[start] = pivot
+    return start
+}
+
+const arr = [3, 1, 6, 2, 4, 5]
+partition(arr)
+console.log(arr) // => [2, 1, 3, 6, 4, 5]

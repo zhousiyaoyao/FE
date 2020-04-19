@@ -365,3 +365,78 @@ class PriorityQueue {
   console.log(pq.list)
   pq.remove() // => 2
   pq.remove() // => 1
+
+// 84
+class Person {
+    constructor (name) {
+      this.name = name
+    }
+    sayHi () {
+      console.log(`I am ${this.name}.`)
+    }
+  }
+  const autoBind = (ToBindClass) => {
+    return function(...args) {
+      const self = new ToBindClass(...args);
+      return new Proxy(self, {
+        get(target, key) {
+          console.log(self)
+          console.log(target)
+          console.log(key)
+          const val = Reflect.get(target, key);
+          console.log(val)
+          console.log('end')
+          if (typeof val === 'function') return val.bind(self);
+          else return val;
+        }
+      })
+    }
+  }
+  const BoundPerson = autoBind(Person)
+  const lucy = new BoundPerson('Lucy')
+  const sayHi = lucy.sayHi
+  sayHi() // => I am Lucy.
+  Person.prototype.sayGood = function () {
+    console.log(`I am ${this.name}. I am good!`)
+  }
+  const sayGood = lucy.sayGood
+  sayGood() // => I am Lucy. I am good!
+
+// 83
+Map.prototype.filterKeys = function(fn){
+    return new Map([...this].filter(([k,v]) => fn(k)))
+}
+
+Map.prototype.filterValues = function(fn){
+    return new Map([...this].filter(([k,v]) => fn(v)))
+}
+
+const m = new Map([['Jerry', 12], ['Jimmy', 13], ['Tomy', 14]])
+
+console.log(m.filterKeys((key) => key.startsWith('J'))) // => Map { Jerry => 12, Jimmy => 13 }
+console.log(m.filterValues((val) => val >= 13)) // => Map { Jimmy => 13, Tomy => 14  }
+
+// 原有的 map 保持不变
+console.log(m) // => Map { Jerry => 12 , Jimmy => 13, Tomy => 14 }
+
+// 82
+const partition3way = (arr) =>{
+    var start = 0
+    var end = arr.length - 1
+    var  i = 0 
+    var pivot = arr[0]
+    var swap = (a, i, j) => [a[i],a[j]] = [a[j],a[i]]
+    while(i <= end){
+        if(arr[i] < pivot){
+            swap(arr, start++, i++)
+        }
+        else if(arr[i] > pivot){
+            swap(arr, i, end--)
+        }else{
+            i++
+        }
+    }
+}
+const arr = [3, 1, 3, 6, 2, 3, 4, 5]
+partition3way(arr)
+console.log(arr)
