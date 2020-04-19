@@ -164,3 +164,204 @@ injectSections(
       { content: 'section2', index: 2 }
     ]
 )
+
+// 93
+class VNode{
+    constructor(tagName, props, children){
+        this.tagName = tagName
+        this.props = props
+        this.children = children
+    }
+    const h = (tagName, props, child) => new VNode(tagName, props, child)
+}
+
+// 92
+const rob1 = (nums) =>
+{
+    var dp = function(nums, start){
+        if(start >= nums.length){
+            return 0
+        }
+        if(map.has(start)){
+            return map.get(start)
+        }
+        var res = Math.max(dp(nums, start + 1), dp(nums, start + 2) + nums[start])
+        map.set(start, res)
+        return res
+    }
+    let map = new Map()
+    return dp(nums, 0)
+}
+//环形
+const rob2 = (nums) =>
+{
+    var dp = function(nums, start, end){
+        if(start >= end){
+            return 0
+        }
+        if(map.has(start)){
+            return map.get(start)
+        }
+        var res = Math.max(dp(nums, start + 1, end), dp(nums, start + 2, end) + nums[start])
+        map.set(start, res)
+        return res
+    }
+    let map = new Map()
+    var n = nums.length
+    return Math.max(dp(nums, 0, n-2),dp(nums,1, n-1))
+}
+console.log(rob([1,10,3,4,5]))
+// 树
+var rob3 = function(root) {
+    var dp = function(root){
+        if(root === null){
+            return 0
+        }
+        if(map.has(root)){
+            return map.get(root)
+        }
+        var res1 = root.val
+             + (root.left === null ? 
+                0 : dp(root.left.left) + dp(root.left.right))
+             + (root.right === null ?
+                0 :dp(root.right.left) + dp(root.right.right))
+        var res2 = dp(root.left) + dp(root.right)
+        var res = Math.max(res1, res2)
+        map.set(root, res)
+        return res
+    }
+    var map = new Map()
+    return dp(root)
+};
+
+// 91
+function* flatten2(arr){
+    var arr = arr.toString().split(',').map((ele) => parseInt(ele))
+    for(let o of arr){
+        yield o
+    }
+}
+const numbers = flatten2([1, [[2], 3, 4], 5])
+console.log(numbers)
+console.log(numbers.next().value) // => 1
+console.log(numbers.next().value) // => 2
+console.log(numbers.next().value) // => 3
+console.log(numbers.next().value) // => 4
+console.log(numbers.next().value) // => 5
+
+// 90  注意箭头函数就不要return，加了大括号就要
+function isSameSet(set1, set2){
+    return [...set1].every((ele) => {
+        return set2.has(ele)
+    }) && 
+    [...set2].every((ele) => {
+        return set1.has(ele)
+    })
+}
+const a = {}
+const b = 1
+const c = 'ScriptOJ'
+
+const set1 = new Set([a, b, c])
+const set2 = new Set([a, c, b])
+console.log(isSameSet(set1, set2)) // => true
+
+// 89
+function unique(arr){
+    var res = []
+    for(var i = 0; i < arr.length; i++){
+        if(res.indexOf(arr[i]) === -1){
+            res.push(arr[i])
+        }
+    }
+    console.log(res)
+    // var arr = new Set(arr)
+    // console.log([...arr])
+    // console.log(Array.from(arr))
+}
+
+unique([0, 1, 2, 2, 3, 3, 4]) // => [0, 1, 2, 3, 4]
+unique([0, 1, '1', '1', 2]) // => [0, 1, '1', 2]
+
+// 88
+// 假设 $ 已经定义为 'ScriptOJ'
+
+// 加载 jQuery，$ 变量被覆盖，变成了 jQuery。
+// ...
+$('body').html('ScriptOJ')
+
+// noConflict 恢复原来的 $ 变量
+const j = $.noConflict()
+$ === 'ScriptOJ' // => true
+
+// 现在 jQuery 变成了 j
+j('body').html('Hello')
+
+(() => {
+    const flag = window.$ // jQuery
+    window.$ = {
+      noConflict () {
+        window.$ = flag // j === jQuert
+        return this // ScriptOJ
+      }
+    }
+})()
+
+// 87
+// (regex).test(str)得到true或false （常用）
+// str.search(regex)得到true或false
+// str.split(regex)按正则切成数组
+// str.match(regex)得到匹配的字符串数组 （常用）
+// (regex).exec(str)得到匹配的字符串数组
+// str.replace(regex,"/")替换成/
+
+
+// d{2,3}横向匹配，匹配2-3个d，d[2,3]纵向匹配，匹配d2或d3，
+// \d匹配[0-9],\D匹配非数组，[\d\D]或者[^]匹配任意字符
+// ?0-1次，+1到无穷次，*任意次数
+// 写在//直接，全局匹配//g，匹配所有的字符，index会移动
+const isUSDFormat = str => (/^\$([1-9]\d{0,2}(,\d{3})*|0)(\.\d{2})?$/).test(str)
+
+//86
+function highlight(arr, ...args){
+    console.log(arr)
+    console.log([...args])
+    let result="";
+    arr.forEach((v,i)=>{
+      result+=`${arr[i]}<span class="color-red">${args[i]||""}</span>`
+    })
+    console.log(result)
+    return result
+}
+
+const yourName = 'ScriptOJ'
+const myName = 'Jerry'
+let html = highlight`Hello, ${yourName}. I am ${myName}.`
+
+// 85
+class PriorityQueue {
+    constructor(list){
+        this.list = []
+    }
+    add (n) {
+      /* TODO */
+      this.list.push(n)
+    }
+    
+    remove () {
+      /* TODO */
+      this.list.sort((a,b) => b-a)
+      var delet = this.list[0]
+      this.list.splice(0,1)
+      return delet
+    }
+  }
+  const pq = new PriorityQueue()
+  pq.add(1)
+  pq.add(2)
+  pq.add(3)
+  console.log(pq.list)
+  console.log(pq.remove())
+  console.log(pq.list)
+  pq.remove() // => 2
+  pq.remove() // => 1

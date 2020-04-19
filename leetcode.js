@@ -446,19 +446,4 @@
 // console.log(safeGet(data, 'a.b.c')) // => scriptoj
 // safeGet(data, 'a.b.c.d') // => 返回 undefined
 // safeGet(data, 'a.b.c.d.e.f.g') // => 返回 undefined
-function injectSections(arr1, arr2){
-    arr2.sort((a,b) => b.index - a.index)
-    console.log(arr2)
-    for(var i = 0; i<arr2.length; i++){
-        arr1.splice(arr2[i].index, 0, arr2[i].content)
-    }
-    console.log(arr1)
-}
-injectSections(
-    ['item1', 'item2', 'item3', 'item4', 'item5'],
-    [
-    { content: 'section3', index: 1 },
-      { content: 'section1', index: 3 },
-      { content: 'section2', index: 2 }
-    ]
-)
+
