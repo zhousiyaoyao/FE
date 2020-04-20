@@ -1,3 +1,17 @@
+let ul = document.querySelector('#ul')
+ul.addEventListener('click', (event) => {
+	console.log(event.target)
+	console.log(event.currentTarget)
+	console.log(event.target.innerText);
+})
+
+pos.addEventListener('click',printt,false)
+pos.addEventListener('click',printt2,false)
+pos.removeEventListener('click',printt,false)
+// false默认冒泡，true捕获
+attachevent
+detachevent
+
 const Event_po = {
     addEvent: function(element, type, handler){
         if(element.addEventListener){

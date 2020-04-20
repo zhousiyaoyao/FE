@@ -479,3 +479,28 @@
 // curried(a, b)(c)(d)
 // // ...
 // // 这些函数执行结果都一样
+// const proposeToMissHan = (isOK) => {
+//   return new Promise( (resolve,reject) => {
+//     setTimeout( () => {
+//       isOK ? resolve('ok') : reject('no')
+//     },25)
+//   });
+// }
+// const extname = (filename) => {
+//     /* TODO */
+//     return '.' + filename.split('.')[1]
+//   }
+
+var list = [['热', '冷', '冰'], ['大', '中', '小'], ['重辣', '微辣'], ['重麻', '微麻']];
+
+function compose(list){
+	var res = list.reduce((sum1,cur1)=>{
+		return cur1.reduce((sum2,cur2) =>{
+            console.log(sum2)
+			return sum2.concat(sum1.map(ele => [].concat(ele, cur2)))
+		}, [])
+	})
+	console.log(res)
+	return res.map(arr=>arr.join('+'))
+}
+compose(list)

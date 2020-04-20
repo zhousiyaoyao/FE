@@ -16,3 +16,15 @@ function compose(...fn){
 }
 const operate = compose(div2, mul3, add1, add1)
 console.log(operate(0)) // => 相当于 div2(mul3(add1(add1(0))))
+
+var list = [['热', '冷', '冰'], ['大', '中', '小'], ['重辣', '微辣'], ['重麻', '微麻']];
+
+function compose(list){
+	var res = list.reduce((sum1,cur1)=>{
+		return cur1.reduce((sum2,cur2) =>{
+			return sum2.concat(sum1.map(ele => [].concat(ele, cur2)))
+		}, [])
+	})
+	console.log(res)
+	return res.map(arr=>arr.join('+'))
+}

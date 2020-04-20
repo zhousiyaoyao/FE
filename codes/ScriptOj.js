@@ -667,6 +667,50 @@ const clz32 = (num) =>
   32 :
   32 - Math.floor(num < 0 ? 0xffffffff + (num % 0xffffffff) : num % 0xffffffff).toString(2).length
 
+// 62
+function initCheckBox () {
+  var li = document.getElementsByClassName("check-item")
+  var all = document.getElementById("check-all")
+  for(var i = 0; i < li.length; i++){
+    li[i].onclick = function(){
+      let bool = true
+      for(let j = 0; j < li.length; j++){
+        if(!li[j].checked){
+          bool = false
+        }
+      }
+      all.checked = bool
+    }
+  }
+  all.onclick = function(){
+    for(let k = 0; k < li.length; k++){
+      li[k].checked = all.checked;
+    }
+  }
+}
+initCheckBox()
+
+// 51
+const tomy = new Proxy({},{
+  set(target,key,value, receiver){
+    console.log(`Don't Touch Me.`);
+  },
+  defineProperty(target, prop, descriptor) {
+    console.log("Don't Touch Me.")
+  },
+  deleteProperty(target, prop) {
+    console.log("Don't Touch Me.")
+  },
+})
+tomy.a = 1
+delete tomy.a
+tomy['sd'] = 2
+
+// 50
+const type = (obj) => {
+  return Object.prototype.toString.call(obj).slice(8,-1).toLowerCase();
+}
+
 // 49
 const pause = (time) => {
   return new Promise((resolve, reject) => {
@@ -682,6 +726,57 @@ async function run () {
 }
 run()
 
+// 33
+const flatten = (arr) => {
+  if(!Array.isArray(arr)){
+      return
+  }
+  var res = []
+  res = arr.reduce((pre,cur) => {
+      return pre.concat(cur instanceof Array ? flatten(cur) : cur)
+  },[])
+  return res
+}
+const flatten = (arr) => {
+  var b = arr.toString().split(',').map(val => parseInt(val))
+  return b
+}
+
+// 32
+var data = 
+{
+    rows: [
+      ["Lisa", 16, "Female", "2000-12-01"],
+      ["Bob", 22, "Male", "1996-01-21"]
+    ],
+    metaData: [
+      { name: "name", note: '' },
+      { name: "age", note: '' },
+      { name: "gender", note: '' },
+      { name: "birthday", note: '' }
+    ]
+}
+const parseData = (data) => {
+    var res = []
+    data.rows.map((row,index) => {
+        let obj = {}
+        row.map((ele, i) => {
+            obj[data.metaData[i].name]= ele
+        })
+        res.push(obj)
+    })
+    return res
+}
+console.log(parseData(data))
+
+// 31
+const getPageTags = function(){
+  var dom = document.getElementsByTagName("*")
+  var s = new Set([...dom].map(dom => dom.tagName))
+  console.log([...s])
+}
+getPageTags()
+
 // 30
 function curry(fn, ...thisArgs){
   return function(...args){
@@ -693,6 +788,20 @@ function curry(fn, ...thisArgs){
 }
 const add = curry((a, b, c) => a + b + c)
 console.log(add(1,1)(2))
+
+// 29
+const toCamelCaseVar = (variable) => {
+  var item = variable.split('_')[1]
+  item = ''.concat(item[0].toUpperCase(), item.slice(1))
+  return variable.split('_')[0] + item
+}
+console.log(toCamelCaseVar('isdsd_sgosdsdsod'))
+
+// 28
+div.tall.wealthy.handsome{
+  border:1px solid red;
+}
+
 
 // 27
 const add1 = (x) => x + 1
@@ -713,4 +822,120 @@ function compose(...fn){
 }
 const operate = compose(div2, mul3, add1, add1)
 console.log(operate(0)) // => 相当于 div2(mul3(add1(add1(0))))
+
+// 26
+function getPages(total, itemsPerPage) {
+  if (!itemsPerPage) {
+    return 0
+  }
+  return Math.ceil(total / itemsPerPage)
+}
+
+// 25
+const proposeToMissHan = (isOK) => {
+  let thoughtTime = 35;
+  return new Promise(function(resolve,reject){
+      setTimeout(function(){
+          if(isOK){
+              resolve("ok");
+          }else{
+            reject("no");
+          }
+      },thoughtTime)
+  });
+}
+proposeToMissHan(false)
+
+// 24
+const plusFor = (name) => {
+  let count = 0;
+  return () => {
+    count++;
+    console.log(`为${name}+${count}s`);
+  }
+}
+const counter1 = plusFor('小明')
+counter1() // => 为小明+1s
+counter1() // => 为小明+2s
+counter1() // => 为小明+3s
+
+// 23
+function renderFatCats (cats) {
+  cats.sort((obj1, obj2) => {
+    if(obj1.weight < obj2.weight) return 1;
+    else return -1
+  })
+  let catsList = document.getElementById('cats-list');
+  catsList.innerHTML = '';
+  let catDiv, catNameSpan, catWeightSpan;
+  cats.map(item => {
+    catDiv = document.createElement('div');
+    catNameSpan = document.createElement('span');
+    catWeightSpan = document.createElement('span');
+    catDiv.classList.add('cat')
+    catNameSpan.classList.add('cat-name')
+    catNameSpan.innerText = item.name
+    catWeightSpan.classList.add('cat-weight')
+    catWeightSpan.innerText = item.weight
+    catDiv.appendChild(catNameSpan)
+    catDiv.appendChild(catWeightSpan)
+    catsList.appendChild(catDiv)
+  })
+}
+
+// 22
+const getChildAttributes = function(el, attr){
+  let result = [...el.children].map((item) => {
+      return item.getAttribute(attr)
+  })
+  return result
+}
+
+// 21
+const hexToRGB = (hex) =>{
+  let o = document.createElement('div');
+  o.style.color = hex;
+  return o.style.color?o.style.color:null;
+}
+
+// 20
+const TRIM_REGX = /(^\s*)|(\s*$)/g
+
+// 19
+const extname = (filename) => {
+  const extIndex = filename.lastIndexOf('.')
+  if (extIndex<=0){
+      return ''
+    } else {
+      return filename.slice(extIndex)
+    }
+}
+console.log(extname('emoji.text'))
+
+// 18
+// ?!表示负前瞻，?=表示前瞻，这里表示查找后面不是\b的和3个数字前面的
+function commafy (num) {
+  let arr=num.toString().split('.')
+  console.log(arr)
+  var integer=arr[0].replace(/(?!\b)(?=(\d{3})+$)/g,',')
+  console.log(integer)
+  if(arr[1]){
+    return integer+'.'+arr[1]
+  }else return integer
+}
+console.log(commafy(120000.11))
+
+function commafy (num) {
+  let arr=num.toString().split('.')
+  let result = arr[0].split('').reverse().reduce((pre,next,index) => {
+      if(index %3 !==0 || next === '-'){
+          return pre = ''.concat(next, pre)
+      }else{
+          return pre = ''.concat(next, ',', pre)
+      }
+  })
+  let right = arr[1]
+  return right ? ''.concat(result,'.',right) : ''.concat(result)
+}
+console.log(commafy(1200000000000))
 
