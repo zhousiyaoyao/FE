@@ -28,6 +28,6 @@ console.log('script end');
 // async2
 // promise1
 // script end
-// async1 end
 // promise2
+// async1 end
 // setTimeout
