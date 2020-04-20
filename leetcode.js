@@ -467,25 +467,15 @@
 // const arr = [3, 1, 3, 6, 2, 3, 4, 5]
 // partition3way(arr)
 // console.log(arr)
+// const f = (a, b, c d) => { ... }
+// const curried = curry(f)
 
-function partition(arr){
-    var start = 0
-    var end = arr.length - 1
-    var pivot = arr[0]
-    while(start < end){
-        while(arr[end] > pivot && start < end){
-            end--
-        }
-        arr[start] = arr[end]
-        while(arr[start] < pivot && start < end){
-            start++
-        }
-        arr[end] = arr[start]
-    }
-    arr[start] = pivot
-    return start
-}
-
-const arr = [3, 1, 6, 2, 4, 5]
-partition(arr)
-console.log(arr) // => [2, 1, 3, 6, 4, 5]
+// curried(a, b, c, d)
+// curried(a, b, c)(d)
+// curried(a)(b, c, d)
+// curried(a, b)(c, d)
+// curried(a)(b, c)(d)
+// curried(a)(b)(c, d)
+// curried(a, b)(c)(d)
+// // ...
+// // 这些函数执行结果都一样

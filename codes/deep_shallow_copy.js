@@ -1,4 +1,4 @@
-// 3. shallow copy
+// 1. shallow copy
 var shallowCopy = function(obj) {
 	if(typeof obj !== 'object') return;
 	var newObj = obj instanceof Array ? [] : {};
@@ -10,7 +10,7 @@ var shallowCopy = function(obj) {
 	return newObj
 }
 
-// 4. deep copy
+// 2. deep copy
 var deepCopy = function(obj) {
 	if(typeof obj !== 'object') return;
 	var newObj = obj instanceof Array ? []:{};
@@ -21,3 +21,7 @@ var deepCopy = function(obj) {
 	}
 	return newObj
 }
+
+// 3. deep copy
+var b = JSON.parse(JSON.stringify(obj))
+console.log(b)

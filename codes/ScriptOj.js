@@ -380,12 +380,7 @@ class Person {
       const self = new ToBindClass(...args);
       return new Proxy(self, {
         get(target, key) {
-          console.log(self)
-          console.log(target)
-          console.log(key)
           const val = Reflect.get(target, key);
-          console.log(val)
-          console.log('end')
           if (typeof val === 'function') return val.bind(self);
           else return val;
         }
@@ -440,3 +435,282 @@ const partition3way = (arr) =>{
 const arr = [3, 1, 3, 6, 2, 3, 4, 5]
 partition3way(arr)
 console.log(arr)
+
+// 81
+const singletonify = fn => {
+    const one = new fn()
+    return new Proxy(fn, {
+      construct(target, argumentsList, newTarget) {
+        return one
+      }
+    })
+  }
+
+// 80
+function partition(arr){
+    var start = 0
+    var end = arr.length - 1
+    var pivot = arr[0]
+    while(start < end){
+        while(arr[end] > pivot && start < end){
+            end--
+        }
+        arr[start] = arr[end]
+        while(arr[start] < pivot && start < end){
+            start++
+        }
+        arr[end] = arr[start]
+    }
+    arr[start] = pivot
+    return start
+}
+
+const arr = [3, 1, 6, 2, 4, 5]
+partition(arr)
+console.log(arr) // => [2, 1, 3, 6, 4, 5]
+
+// 79
+class A {
+    constructor (name) {
+      this.name = name
+    }
+    sayHi () {
+        console.log(`I am ${this.name}.`)
+    }
+  }
+  
+class B {
+    constructor (name) {
+        this.name = name
+    }
+    sayHi () {
+        console.log(`This is ${this.name}.`)
+    }
+}
+
+function exchange(a,b){
+    var ap = Object.getPrototypeOf(a)
+    var bp = Object.getPrototypeOf(b)
+    Object.setPrototypeOf(b,ap)
+    Object.setPrototypeOf(a,bp)
+}
+
+
+const a = new A('Jerry') 
+const b = new B('Lucy')
+
+a.sayHi() // => 'I am Jerry.'
+b.sayHi() // => 'This is Lucy.'
+
+a instanceof B // => false
+b instanceof A // => false
+
+exchange(a, b)
+a.sayHi() // => 'This is Jerry.'
+b.sayHi() // => 'I am Lucy.'
+
+a instanceof B // => true
+b instanceof A // => true
+
+const c = new A('Tomy')
+c.sayHi() // => 应该返回 'I am Tomy.'
+
+// 77
+const merge = (arr) => /* TODO */
+{
+  let length = arr.length;
+  let temp; // 交换的中间值
+  for(let i = 0; i< length;i++){
+    if(arr[i] > arr[i+1]) {
+      temp = arr[i];
+      arr[i] = arr[i+1];
+      arr[i+1] = temp;
+    }
+    if(i==length-1){
+      i=0;
+      length--;
+    }
+  }
+  console.log(arr)
+}
+var a = [10, 21, 32, 11, 16, 40] // 从 0 和 3 开始升序
+merge(a)
+
+// 76
+const obj = {}
+const config1 = { enumerable: false, configurable: true }
+const config2 = { enumerable: true, configurable: true }
+
+Object.defineProperties(obj, {
+  green: config1,
+  red: config2,
+  blue: config1,
+  yellow: config2
+})
+
+function flikerProps(obj){
+  const a = Object.getOwnPropertyNames(obj)
+  const b = Object.keys(obj)
+  for(var i = 0; i < a.length; i++){
+    Object.defineProperty(obj, a[i], {
+      enumerable: b.indexOf(a[i]) === -1
+    })
+  }
+}
+
+console.log(Object.keys(obj)) // => ["red", "yellow"]
+flikerProps(obj) // 闪烁
+console.log(Object.keys(obj)) // => ["green", "blue"]
+flikerProps(obj) // 闪烁
+console.log(Object.keys(obj)) // => ["red", "yellow"]
+flikerProps(obj) // 闪烁
+console.log(Object.keys(obj)) // => ["green", "blue"]
+
+// 75
+const findMostProductivePigChildrenCount = (dom) => {
+  var a = [...dom.children]
+  console.log([...dom.children])
+  var b = [dom.children.length]
+  while(a.length){
+    let c = []
+    b.push(Math.max(...a.map(v => v.children.length)))
+    a.forEach(v => {
+      c.push(...v.children)
+    })
+    a = c
+  }
+  console.log(b)
+}
+var pig = document.querySelector('#pig');
+findMostProductivePigChildrenCount(pig)
+
+// 74
+const climbStairs = (n) =>{
+  var dp = new Array(n)
+  dp[0] = 1
+  dp[1] = 2
+  for(var i = 2; i < n; i++){
+    dp[i] = dp[i-1] + dp[i-2]
+  }
+  console.log(dp[n-1])
+}
+climbStairs(10)
+
+// 73
+function fillEmpty(a){
+  for(var i = 0; i < a.length; i++){
+    if(!(i in a)){
+      a[i] = 'hello'
+    }
+  }
+  console.log(a)
+}
+const a = [, , null, undefined, 'OK', ,]
+fillEmpty(a)
+
+// 72
+const getData = (name) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('My name is ' + name)
+    }, 100) // 模拟异步获取数据
+  })
+}
+const wrapAsync = (generatorFn) =>{
+  return function(...args){
+    return new Promise((resolve, reject) => {
+      const g = generatorFn(...args)
+      function go(result){
+        if(result.done){
+          resolve(result.value)
+          return;
+        }
+        return result.value.then(val => {
+          return go(g.next(val))
+        })
+      }
+      go(g.next())
+    })
+
+  }
+}
+
+const run = wrapAsync(function * (lastName) {
+  const data1 = yield getData('Jerry ' + lastName)
+  const data2 = yield getData('Lucy ' + lastName)
+  return [data1, data2]
+})
+
+run('Green').then((val) => {
+  console.log(val) // => [ 'My name is Jerry Green', 'My name is Lucy Green' ]
+})
+
+// 71
+const uniqueNums = (n) => {
+  let set = new Set()
+  console.log(Math.random())
+  while(set.size < n){
+    set.add(Math.floor(2 + Math.random() * 31))
+  }
+  return [...set]
+}
+console.log(uniqueNums(31))
+
+// 70 位运算，跳过
+const clz32 = (num) =>
+  isNaN(num) ||
+  null == num ||
+  !Number.isFinite(Number(num)) ||
+  Math.floor(num % 0xffffffff) == 0 ||
+  num >= 1.5430679999992199242579968e+25 ||
+  num <= -1.5430679999992199242579968e+25 ?
+  32 :
+  32 - Math.floor(num < 0 ? 0xffffffff + (num % 0xffffffff) : num % 0xffffffff).toString(2).length
+
+// 49
+const pause = (time) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve()
+    }, time)
+  })
+}
+async function run () {
+  console.log('Hello')
+  await pause(1000) // 续一秒
+  console.log('World') // 一秒以后继续运行
+}
+run()
+
+// 30
+function curry(fn, ...thisArgs){
+  return function(...args){
+    if(args.length + thisArgs.length < fn.length){
+      return curry(fn, ...thisArgs.concat(args))
+    }
+    return fn.apply(this, thisArgs.concat(args))
+  }
+}
+const add = curry((a, b, c) => a + b + c)
+console.log(add(1,1)(2))
+
+// 27
+const add1 = (x) => x + 1
+const mul3 = (x) => x * 3
+const div2 = (x) => x / 2
+
+function compose(...fn){
+  return x => fn.reduceRight((pre,cur) => cur(pre), x)
+}
+
+function compose(...fn){
+  return function(parameter){
+    for(var i = fn.length - 1; i >= 0; i--){
+      parameter = fn[i](parameter)
+    }
+    return parameter
+  }
+}
+const operate = compose(div2, mul3, add1, add1)
+console.log(operate(0)) // => 相当于 div2(mul3(add1(add1(0))))
+
