@@ -656,3 +656,500 @@ var wordBreak = function(s, wordDict) {
     }
     return dp[n]
 };
+
+// 198
+var rob = function(nums) {
+    var dp = function(nums, start){
+        if(start >= nums.length){
+            return 0
+        }
+        if(map.has(start)){
+            return map.get(start)
+        }
+        var res = Math.max(dp(nums,start+2) + nums[start], dp(nums, start+1))
+        map.set(start, res)
+        return res
+    }
+    let map = new Map()
+    return dp(nums,0)
+};
+
+// 494
+var findTargetSumWays = function(nums, S) {
+    return helper(nums, 0, S)
+};
+function helper(nums, start, target){
+    if(start === nums.length){
+        return target === 0 ? 1 : 0
+    }
+    return helper(nums, start+1, target + nums[start])
+    + helper(nums, start+1, target - nums[start])
+}
+
+// 438
+var findAnagrams = function(s, p) {
+    var res = []
+    var left = 0, right = 0;
+    var window = {}
+    var needle = {}
+    for(var i = 0; i < p.length; i++){
+        needle[p[i]] ? needle[p[i]]++ : needle[p[i]] = 1
+    }
+    var match = 0
+    var needle_length = Object.keys(needle).length
+    while(right < s.length){
+        var c1 = s[right]
+        if(c1 in needle){
+            window[c1] ? window[c1]++ : window[c1] = 1
+            if(window[c1] === needle[c1]){
+                match++
+            }
+        }
+        right++
+        while(match === needle_length){
+            if(right - left === p.length){
+                res.push(left)
+            }
+            var c2 = s[left]
+            if(c2 in needle){
+                window[c2]--
+                if(window[c2] < needle[c2]){
+                    match--
+                }
+            }
+            left++
+        }
+    }
+    return res
+};
+
+// 56
+var merge = function(intervals) {
+    if(intervals.length === 0){
+        return []
+    }
+    intervals.sort((a,b) => {
+        return a[0] - b[0]
+    })
+    var res = [intervals[0]]
+    for(var i = 1; i < intervals.length; i++){
+        if(res[res.length-1][1] >= intervals[i][0]){
+            res[res.length-1][1] = Math.max(res[res.length-1][1], intervals[i][1])
+        }else{
+            res.push(intervals[i])
+        }
+    }
+    return res
+};
+
+// 234
+var isPalindrome = function(head) {
+    if(!head || head.next === null){
+        return true
+    }
+    var dummy = new ListNode(0)
+    dummy.next = head
+    var fast = dummy
+    var slow = dummy
+    while(fast && fast.next){
+        fast = fast.next.next
+        slow = slow.next
+    }
+    var head2 = slow.next
+    slow.next = null
+    var cur = head
+    var pre = null
+    while(cur){
+        var temp = cur.next
+        cur.next = pre
+        pre = cur
+        cur = temp
+    }
+    if(!fast){
+        pre = pre.next
+    }
+    while(pre){
+        if(pre.val !== head2.val){
+            return false
+        }
+        pre = pre.next
+        head2 = head2.next
+    }
+    return true
+};
+
+// 20
+var isValid = function(s) {
+    if(s.length === 1){
+        return false
+    }
+	var dic = {'(':')', '{':'}', '[': ']'}
+	var left = Object.keys(dic)
+	var right = Object.values(dic)
+	var stack = []
+    for(var i = 0; i < s.length; i++){
+        if(left.indexOf(s[i]) !== -1){
+            stack.push(s[i])
+        }
+        if(right.indexOf(s[i]) !== -1){
+            var temp = stack.pop()
+            if(dic[temp] !== s[i]){
+                return false
+            }
+        }
+    }
+	if(stack.length !== 0){
+		return false
+	}else{
+		return true
+	}
+};
+
+// 124
+var maxPathSum = function(root) {
+    var res = -Infinity
+    var helper = function(node){
+        if(node === null){
+            return 0
+        }
+        var left = Math.max(0, helper(node.left))
+        var right = Math.max(0, helper(node.right))
+        res = Math.max(res, left + right + node.val)
+        return Math.max(left, right) + node.val
+    }
+    helper(root)
+    return res
+};
+
+// 221
+
+
+// 55
+var canJump = function(nums) {
+    var res = 0
+    for(var i = 0; i < nums.length; i++){
+        if(nums[i] === 0 && res <= i){
+            break
+        }
+        res = Math.max(res, nums[i] + i)
+    }
+    return res >= nums.length-1
+};
+
+// 34
+var searchRange = function(nums, target) {
+    var res = [-1, -1]
+    var left = 0
+    var right = nums.length
+    var flag = false
+    while(left < right){
+        var mid = left + Math.floor((right - left) / 2)
+        if(nums[mid] === target){
+            right = mid
+            flag = true
+        }else if(nums[mid] < target){
+            left = mid + 1
+        }else if(nums[mid] > target){
+            right = mid
+        }
+    }
+    if(flag){
+        res[0] = left
+    }
+    var left2 = 0
+    var right2 = nums.length
+    var flag2 = false
+    while(left2 < right2){
+        var mid2 = left2 + Math.floor((right2 - left2) / 2)
+        if(nums[mid2] === target){
+            left2 = mid2 + 1
+            flag2 = true
+        }else if(nums[mid2] < target){
+            left2 = mid2 + 1
+        }else if(nums[mid2] > target){
+            right2 = mid2
+        }
+    }
+    if(flag2){
+        res[1] = left2 - 1
+    }
+    return res
+};
+// 84
+var largestRectangleArea = function(heights) {
+    var res = 0
+    heights.push(0)
+    heights.unshift(0)
+    var stack = []
+    for(var i = 0; i < heights.length; i++){
+        while(stack && heights[stack[stack.length-1]] > heights[i]){
+            var temp = stack.pop()
+            var right = i
+            var left = stack[stack.length - 1]
+            res = Math.max(res, (right - left - 1) * heights[temp])
+        }
+        stack.push(i)
+    }
+    return res
+};
+
+// 322
+var coinChange = function(coins, amount) {
+    var dp = new Array(amount+1).fill(amount+1)
+    dp[0] = 0
+    for(var i = 0; i < dp.length; i++){
+        for(var j = 0; j < coins.length; j++){
+            if(i - coins[j] < 0){
+                continue
+            }
+            dp[i] = Math.min(dp[i], 1 + dp[i - coins[j]])
+        }
+    }
+    return (dp[amount] === amount + 1) ? -1 : dp[amount];
+};
+
+// 19
+var removeNthFromEnd = function(head, n) {
+    var dummy = new ListNode(0)
+    dummy.next = head
+    var fast = dummy
+    var slow = dummy
+    for(var i = 0; i < n+1; i++){
+        fast = fast.next
+    }
+    while(fast !== null && fast !==null){
+        fast = fast.next
+        slow = slow.next
+    }
+    slow.next = slow.next.next
+    return dummy.next
+};
+
+// 2
+var addTwoNumbers = function(l1, l2) {
+    let dummy = new ListNode(0)
+    var head = dummy
+    var n = 0
+    while(l1 || l2){
+        var val1
+        var val2
+        if(l1){
+            val1 = l1.val
+            l1 = l1.next
+        }else{
+            val1 = 0
+        }
+        if(l2){
+            val2 = l2.val
+            l2 = l2.next
+        }else{
+            val2 = 0
+        }
+        var sum = val1 + val2 + n
+        var temp = new ListNode(sum % 10)
+        head.next = temp
+        head = head.next
+        n = parseInt(sum/10)
+    }
+    if(n > 0){
+        head.next = new ListNode(n)
+    }
+    return dummy.next
+};
+
+
+// 33
+var search = function(nums, target) {
+    var l = 0
+	var r = nums.length - 1
+    while(l <= r){
+        var mid = Math.floor((r + l)/2)
+        if(nums[mid] === target){
+            return mid
+        }else if(nums[l] <= nums[mid]){
+            if(nums[l] <= target && target <= nums[mid]){
+                r = mid - 1
+            }else{
+                l = mid + 1
+            }
+        }else{
+            if(nums[mid] <= target && target <= nums[r]){
+                l = mid + 1
+            }else{
+                r = mid - 1
+            }
+        }
+	}
+    return -1
+};
+
+// 76
+var minWindow = function(s, t) {
+    var left = 0
+    var right = 0
+    var min_len = Infinity
+    var window = {}
+    var needle = {}
+    var match = 0
+    var start = 0
+    for(var i = 0; i < t.length; i++){
+        needle[t[i]] ? needle[t[i]]++ : needle[t[i]] = 1
+    }
+    while (right < s.length){
+        if (s[right] in needle){
+            window[s[right]] ? window[s[right]]++ : window[s[right]] = 1
+            if(window[s[right]] === needle[s[right]]){
+                match++
+            }
+        }
+        right++
+        while(match === Object.keys(needle).length){
+            if (right - left < min_len){
+                start = left
+                min_len = right - left
+            }
+            if (s[left] in needle){
+                window[s[left]]--
+                if(window[s[left]] < needle[s[left]]){
+                    match --
+                }
+            }
+            left++
+        }
+    }
+    return min_len === Infinity ? "" : s.substr(start, min_len)
+};
+
+// 581
+var findUnsortedSubarray = function(nums) {
+    var arr = [...nums]
+    nums.sort((a,b) => {
+        return a - b
+    })
+    var left = 0, i = 0
+    var right = nums.length - 1, j = nums.length - 1
+    while(i < nums.length){
+        if(nums[i] !== arr[i]){
+            left = i
+            break
+        }
+        i++
+    }
+    while(j > 0){
+        if(nums[j] !== arr[j]){
+            right = j
+            break
+        }
+        j--
+    }
+    return i === nums.length ? 0 : right - left + 1
+};
+
+// 3
+var lengthOfLongestSubstring = function(s) {
+    var left = 0
+    var right = 0
+    var window = {}
+    var res = 0
+    while (right < s.length){
+        var c1 = s[right]
+        window[c1] ? window[c1]++ : window[c1] = 1
+        right++
+        while(window[c1] > 1){
+            var c2 = s[left]
+            window[c2]--
+            left++
+        }
+        res = Math.max(res, right - left)
+    }
+    return res
+};
+
+// 31
+var nextPermutation = function(nums) {
+    var i = nums.length - 1
+    var j = nums.length - 1
+    while(i > 0 && nums[i-1] >= nums[i]){
+        i--
+    }
+    if(i === 0){
+        nums.reverse()
+        return nums
+    }
+    var k = i - 1
+    while(nums[j] <= nums[k]){
+        j--
+    }
+    var temp = nums[k]
+    nums[k] = nums[j]
+    nums[j] = temp
+    var left = k + 1
+    var right = nums.length - 1
+    while(left < right){
+        var tmp = nums[left]
+        nums[left] = nums[right]
+        nums[right] = tmp
+        left++
+        right--
+    }
+};
+
+// 5
+var longestPalindrome = function(s) {
+    var helper = function(s, start, end){
+        while(start >= 0 && end < s.length && s[start] === s[end]){
+            start--
+            end++
+        }
+        return s.slice(start+1,end)
+    }
+    var res = ''
+    if(s.length === 1){
+        return s
+    }
+    for(var i = 0; i < s.length-1; i++){
+        var temp = helper(s, i, i)
+        if(res.length < temp.length){
+            res = temp
+        }
+        var temp = helper(s, i, i+1)
+        if(res.length < temp.length){
+            res = temp
+        }
+    }
+    return res
+};
+
+// 15
+var threeSum = function(nums) {
+    var n = nums.length
+    var res = []
+    if(nums.length === 0 || n<3){
+        return []
+    }
+    nums.sort((a,b) => (a-b))
+    for(var i = 0; i < n; i++){
+        if(nums[i]>0)
+            return res
+        if(i>0 && nums[i]==nums[i-1])
+            continue
+        var L = i+1
+        var R = n-1
+        while(L<R){
+        if(nums[i]+nums[L]+nums[R]==0){
+            res.push([nums[i],nums[L],nums[R]])
+            while(L<R && nums[L]==nums[L+1])
+                L=L+1
+            while(L<R && nums[R]==nums[R-1])
+                R=R-1
+            L=L+1
+            R=R-1
+        }else if(nums[i]+nums[L]+nums[R]>0)
+            R=R-1
+        else{
+            L=L+1
+        }
+        }
+    }
+    return res
+};
