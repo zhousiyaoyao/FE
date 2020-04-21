@@ -667,6 +667,14 @@ const clz32 = (num) =>
   32 :
   32 - Math.floor(num < 0 ? 0xffffffff + (num % 0xffffffff) : num % 0xffffffff).toString(2).length
 
+// 64
+class Box extends Set {
+  constructor(arr) {
+    super();
+    arr.forEach(e => this.add(e));
+  }
+}
+
 // 62
 function initCheckBox () {
   var li = document.getElementsByClassName("check-item")
@@ -689,6 +697,22 @@ function initCheckBox () {
   }
 }
 initCheckBox()
+
+// 56
+function is(x, y) {
+  if (x === y) {
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    return x !== x && y !== y
+  }
+}
+
+// 54
+const initArray = (m, n) => {
+  /* TODO */
+  var res = new Array(m).fill(n)
+  return res
+}
 
 // 51
 const tomy = new Proxy({},{
@@ -725,6 +749,12 @@ async function run () {
   console.log('World') // 一秒以后继续运行
 }
 run()
+
+// 39
+const arrWithoutLoop = (n) =>{
+  return [...Array(n)].map((x,i) => i)
+}
+console.log(arrWithoutLoop(8))
 
 // 33
 const flatten = (arr) => {

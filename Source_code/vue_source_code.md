@@ -19,7 +19,7 @@ var Vnode = {
         {tag: 'p', text: '123'}
     ]
 }
-Vnode主要属性，tagName，props（包括id，class），children，text
+Vnode主要属性，tagName，props（包括id，class），children
 
 
 1. diff比较新旧节点，只会比较同层
@@ -118,7 +118,7 @@ vue实例 -> _init -> initstate -> initDate -> proxy把data绑定到vm._data (th
 $mount -> 没传template拿el，传了template拿template -> 得到模版字符串 -> parse成抽象语法树 -> 抽象语法书优化加static -> generate render code,得到render函数
        -> 传入了render方法，直接生成render函数，好处是不会出现使用插值的时候，{{message}}的情况，因为会render执行结束才替换message，render会替换el
 
-------响应式在这里开始------------
+------响应式在这里开始------------（beforeMount)
 
 ### render到VNode的生成
 1. 调用 render.call(vm._renderProxy, vm.$createElement)函数并返回生成的虚拟节点(vnode)，createElement函数生成vnode

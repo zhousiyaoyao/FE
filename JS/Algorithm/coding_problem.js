@@ -31,3 +31,29 @@ function add(a ,b){
 	}
 	return sum
  }
+
+//abbreviate('abce- fffff--    eeeee') => "a2e- f3f--    e3e"
+//abbreviate('abc') => abc
+//abbreviate('elephant') => e6t
+//abbreviate('ride') => r2e
+//abbreviate('elephant-ride') => e6t-r2e
+function abbreviate(str){
+    var re =  str.match(/[a-z]+/g)
+    var res = re.map(val => {
+        var i = 0
+        var j = val.length - 1
+        if(j >= 3){
+            return val[i] + (j-i-1) + val[j]
+        }
+        return val
+    })
+    for(var i = 0; i < re.length; i++){
+        var index = str.indexOf(re[i])
+        var arr = str.split('')
+        arr.splice(index, re[i].length)
+        arr.splice(index, 0, res[i])
+        str = arr.join('')
+    }
+    return arr.join('')
+}
+console.log(abbreviate('elephant-ride'))
