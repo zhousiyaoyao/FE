@@ -19,3 +19,11 @@ document.head.appendChild(script);
 function jsonpCallback(data){
 	var data = JSON.parse(json)
 }
+
+this.$axios({
+	method: "post",
+	url: "http://127.0.0.1:8888/demo/super/saveReply",
+	data: this.$qs.stringify({
+	})
+  }).then(response => {
+  }).catch(error => console.log(error, "error"))

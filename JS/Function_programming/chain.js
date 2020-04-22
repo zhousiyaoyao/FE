@@ -18,9 +18,9 @@ function add(num) {
 		nums += num;
 		return twwo;
 	}
-	twwo.valueOf = function() {
+	twwo.sum = function() {
 		return nums
 	}
 	return twwo;
 }
-console.log(add(1)(2)(3).valueOf())
+console.log(add(1)(2)(3).sum())

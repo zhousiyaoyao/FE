@@ -31,3 +31,32 @@ console.log('script end');
 // promise2
 // async1 end
 // setTimeout
+
+async function wait (time) {
+    const now = Date.now()
+    return new Promise((res, rej) => {
+      setTimeout(() => {
+        console.log('我是异步执行的函数')
+        res()
+      }, time)
+    })
+  }
+
+const arr = [1, 2, 3]
+
+let res = []
+arr.forEach(async (i) => {
+    res.push(wait(1000))
+    console.log(i)
+})
+
+Promise.all(res).then(() => {
+    console.log(arr)
+})
+
+
+// arr.forEach(async (i) => {
+//     await wait(1000)
+//     console.log(i)
+// })
+// console.log(arr)
