@@ -1,1 +1,2 @@
-console.log(Math.log(0.8*1000000*8)/Math.log(2))
+var a = new Set([{},{},NaN,NaN])
+console.log(a.size)
