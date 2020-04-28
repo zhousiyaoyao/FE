@@ -1,4 +1,8 @@
-### 1. 实现new
+[1. 实现new](###实现new)
+[2. 实现bind](###实现bind)
+
+
+### 实现new
 ```javascript
 function new_new(){
     let obj = {}
@@ -8,7 +12,7 @@ function new_new(){
     return typeof result === 'object' ? result : obj;
 }
 ```
-### 2. 实现bind
+### 实现bind
 ```javascript
 Function.prototype.bind_bind = function (context, ...bindArgs) {
 	let _me = this
