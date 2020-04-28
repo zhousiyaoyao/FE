@@ -1,6 +1,5 @@
 # 前端基础实践
-[TOC]
-- [算法总结](# vue_source_code)
+- [算法总结](https://github.com/zhousiyaoyao/FE/blob/master/Source_code/vue_source_code.md)
 - [计算机网络总结]
 - [JS总结]
 - [CSS总结]
