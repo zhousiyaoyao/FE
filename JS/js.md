@@ -1,23 +1,27 @@
 ### 1.实现new
-``function new_new(){
+```javascript
+function new_new(){
     let obj = {}
     const Constructor = [].shift.call(arguments);// 取出第一个参数为构造函数
     obj.__proto__ = Constructor.prototype;
     var result = Constructor.apply(obj, arguments);
     return typeof result === 'object' ? result : obj;
-}``
+}
+```
 ### 2.实现bind
 
 ### 3.实现apply
 ### 4.实现call
-`` Function.prototype.call_call = function(context){
+```javascript 
+Function.prototype.call_call = function(context){
     context = context ? Object(context) : window
     context.fn = this
     let args = [...arguments].slice(1)
     let r = context.fn(args)
     delete context.fn
     return r
-} ``
+} 
+```
 ### 5.实现instanceof
 ### 6.实现promise
 ### 7.手写深拷贝
