@@ -1,6 +1,17 @@
 # 目录
-* [1. 实现new](###1-实现new)
-* [2. 实现bind](###2-实现bind)
+* [1. 实现new](#1-实现new)
+* [2. 实现bind](#2-实现bind)
+* [3. 实现apply](#3-实现apply)
+* [4. 实现call](#4-实现call)
+* [5. 实现instanceof](#5-实现instanceof)
+* [6. 实现promise](#6-实现promise)
+* [7. 手写深拷贝](#7-手写深拷贝)
+* [8. 手写浅拷贝](#8-手写浅拷贝)
+* [9. 手写jsonp](#9-手写jsonp)
+* [10. 实现bind](#2-实现bind)
+* [11. 实现bind](#2-实现bind)
+* [12. 实现bind](#2-实现bind)
+
 
 
 ### 1. 实现new
