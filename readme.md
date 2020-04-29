@@ -11,3 +11,5 @@
 * [Vue](https://github.com/zhousiyaoyao/FE/blob/master/Source_code/vue_source_code.md)
 ### 工具总结
 * [Webpack](https://github.com/zhousiyaoyao/FE/blob/master/Project/webpack.md)
+### 书籍总结
+* [JavaScript高级程序设计（第3版）](https://github.com/zhousiyaoyao/FE/blob/master/JS/gaocheng.md)
