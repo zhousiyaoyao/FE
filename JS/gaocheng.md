@@ -25,3 +25,16 @@
 10. 不加async和defer的情况下，js文件执行都是按照页面中出现的先后顺序
 
 ## 第三章
+1. 0.1+0.2 = 0.300000004是使用IEEE754数值的浮点计算通病，python也会有，因为浮点数值的最高精度是17位小数
+2. -Infinity - Number.MIN_VALUE - Number.MAX_VALUE - Infinity  isFinite()返回true或false
+3. 除0返回nan
+4. 任何nan的操作都返回nan，nan不等于任何值，包括自己。isnan()判断是不是nan
+5. Number(), parseInt(), parseFloat()数值转换
+6. null和undefined没有toString()，所以用string(), 遇到非null或者undefined会调用toString()，否则旧直接打印null或者undefined
+7. Object每个实例都有Constructor，hasOwnProperty，isPrototypeof，propertyIsEnumerable，toLocalString，toString和valueof
+8. 负数以二进制补码的形式存储，就是正数的反码加1
+9. 位操作时，把64位的值转换为32位，执行位操作，再转换回去。所以有负效应，nan和infinity会当成0来处理
+10. 按位非 ～ 返回反码 / 按位与 & 按位进行and操作 / 按位或 ｜ 按位进行or操作 / 按位异或 ^ 只有一个1才返回1，其他都是0
+11. 左移 << 所有位向左移动，右侧0填充，不会影响符号数
+12. 有符号右移 >>  所有位向右移动，左侧符号位的值填充
+
