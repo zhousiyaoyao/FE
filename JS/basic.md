@@ -13,6 +13,8 @@
 * [12.URL输入过程](#URL输入过程)
 * [13.加载](#加载)
 * [14.前端鉴权](#前端鉴权)
+* [15.Websocket](#Websocket)
+* [16.雅虎35条军规](#雅虎35条军规)
 
 ### 浏览器缓存
 1. 一段时间内保存web资源的副本，如果发送对这个资源的请求，会直接使用缓存副本，可以提高网页打开速度，减少带宽消耗
@@ -147,3 +149,57 @@ Token是JSON对象，加上签名，用户无法修改
 过程：前端拿到token，存在localstorage或者vuex，每次路由跳转，判断localstorage或者vuex有无token，没有则跳转到登录页，有则请求用户信息，改变登录状态。每次请求接口，在axios请求头加入token，后台接口判断请求头有无token，没有则返回401，前端得到401，重定向到登录页面。
 5. SSO单点登录，用户登录一次可以访问所有相互信任的应用系统。需要一个认证中心passport，子系统的登录需要通过passport，一个子系统登陆成功，passport会颁发令牌给其他子系统。授权后有session，一定时间不需要再发起认证。
 6. OAuth（开发授权）允许用户授权第三方网站访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码提供给第三方网站或分享他们数据的内容。比如QQ，微信，微博。
+
+### Websocket
+1. HTTP只能客户端往服务器发请求，而websocket服务器也能往客户端发
+2. HTTP是非持久化协议，keep-alive表示一个连接可以发送多个request，但是一个request只能对应一个response
+3. websocket是持久化协议，基于HTTP协议，一次http请求告诉后台切换为websocket，就可以用了
+4. Http可以用ajax 轮询（每隔一段时间发一个请求）或者long poll（发一个resquest，没有response就一直等着）来实现websocket
+5. websocket心跳机制，检测客户端是否还在线
+
+### 雅虎35条军规
+1. 移动端
+* 保持单个文件小于25kn
+* 打包内容分段multipart文档
+2. 图片
+* 优化图片
+* 优化CSS sprite
+* 不要在HTML中缩放图片
+* 使用体积小可缓存的favicon.ico
+3. JS
+* 脚本放在页面底部
+* 使用外部js和css
+* 压缩js和css
+* 移除重复脚本
+* 减少DOM操作
+* 使用高效的事件处理
+4. CSS
+    * 样式表放在head中
+    * 不要用css表达式
+    * Link代替import
+    * 不用filter
+    * 页面内容
+    * 减少http请求
+    * 合并js和css
+    * 雪碧图，css sprite将背景图片合并一个文件，background-image和position控制显示
+    * 小图片转换成base64编码，用css文件大小换http请求
+    * 减少dns查询
+    * 避免重定向
+    * 缓存ajax请求
+    * 延迟加载
+    * 预加载
+    * 减少DOM元素数量
+    * 划分内容到不同域名
+    * 少用iframe
+    * 避免404错误
+5. 服务器
+* 使用CDN
+* 添加expire或cache-control响应头
+* 启动Gzip
+* 配置Etag
+* 尽早输出缓冲
+* ajax请求使用GET方法
+* 避免图片src为空
+6. Cookie
+* 减少cookie大小
+* 静态资源使用无cookie域名
