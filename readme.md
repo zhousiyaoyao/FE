@@ -7,11 +7,15 @@
 ### Javascript总结
 * [Javascript手写](https://github.com/zhousiyaoyao/FE/blob/master/JS/js.md)
 * [Javascript基础](https://github.com/zhousiyaoyao/FE/blob/master/JS/basic.md)
+* [TypeScript](https://github.com/zhousiyaoyao/FE/blob/master/JS/TS.md)
 ### 计算机基础总结
 * [计算机网络](https://github.com/zhousiyaoyao/FE/blob/master/JS/network.md)
 ### 源码总结
 * [Vue](https://github.com/zhousiyaoyao/FE/blob/master/Source_code/vue_source_code.md)
 ### 工具总结
 * [Webpack](https://github.com/zhousiyaoyao/FE/blob/master/Project/webpack.md)
+* [Jest](https://github.com/zhousiyaoyao/FE/blob/master/Project/jest.md)
+* [Enzyme](https://github.com/zhousiyaoyao/FE/blob/master/Project/Enzyme.md)
+* [CI/CD](https://github.com/zhousiyaoyao/FE/blob/master/Project/CICD.md)
 ### 书籍总结
 * [JavaScript高级程序设计（第3版）](https://github.com/zhousiyaoyao/FE/blob/master/JS/gaocheng.md)
