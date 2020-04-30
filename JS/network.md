@@ -5,6 +5,8 @@
 * [TCP，UDP](#TCP，UDP)
 * [TCP拥塞控制](#TCP拥塞控制)
 * [OSI七层模型和TCP/IP模型](#OSI七层模型和TCP/IP模型)
+* [HTTP请求](#HTTP请求)
+* [前端安全](#前端安全)
 
 
 ### 对称加密，非对称加密，CA
@@ -57,3 +59,19 @@
 4. 链路层
 * 数据链路层：传输有地址的帧以及错误检测功能，SLIP，CSLIP，PPP，ARP，RARP，MTU
 * 物理层：以二进制数据形式在物理媒体上传输数据，ISO2110，IEEE802，IEEE802.2
+
+### HTTP请求
+1. Head:检查超链接的有效性，检查资源的有效性，可被缓存，不返回消息体，获取请求中隐含的元信息。仅传输状态行和标题部分。这对于恢复相应头部编写的元数据非常有用，而无需传输整个内容
+2. Options:CORS预检请求，对服务器数据可能产生副作用的请求方法（复杂请求），获知服务端是否允许跨域请求。发送请求内容类型不是application/x-www-form-urlencoded，multipart/formdata或text/plain的话，会触发options请求。措施，用qs序列化对象，或者URLSearchParams，emulateJSON。简单请求：HEAD，GET，POST
+
+### 前端安全
+1. Xss攻击
+* Cross-site scripting，代码注入攻击，恶意代码嵌入，并被浏览器执行，注入html，注入标签属性，注入事件，注入css，注入js
+* 存储型，存在数据库，论坛，评论，私信
+* 反射型，存在url，网站搜索，跳转，用户点击恶意url
+* DOM型，前端责任，插入在js
+* 防范：Cookie设置httponly，输入检查，否则会被绕过直接发起请求，避免innerHTML，内联监听器少用，href
+2. Csrf攻击
+* Cross-site request forgery，跨站请求伪造
+* 在不登出A的情况下，访问恶意网站B，B获取A的cookie，模拟用户操作
+* 验证码，token（最合适方法）
