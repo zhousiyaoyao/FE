@@ -2,6 +2,8 @@
 ### 算法总结
 * [Leetcode hot 100](https://github.com/zhousiyaoyao/FE/blob/master/JS/Algorithm/leetcode_hot_100.js)
 * [ScriotOj](https://github.com/zhousiyaoyao/FE/blob/master/JS/Algorithm/ScriptOj.js)
+* [剑指offer](https://github.com/zhousiyaoyao/FE/blob/master/JS/Algorithm/offer.md)
+* [程序员面试金典](https://github.com/zhousiyaoyao/FE/blob/master/JS/Algorithm/pro.md)
 * [Tree](https://github.com/zhousiyaoyao/FE/blob/master/JS/Algorithm/tree_iterate.js)
 * [Sort](https://github.com/zhousiyaoyao/FE/blob/master/JS/Algorithm/sort.js)
 ### Javascript总结
