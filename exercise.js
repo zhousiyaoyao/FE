@@ -1,2 +1,8 @@
-var a = new Set([{},{},NaN,NaN])
-console.log(a.size)
+function setname(obj){
+    obj.name = "1"
+    var obj = new Object()
+    obj.name = "2"
+}
+var person = new Object()
+setname(person)
+alert(person.name)
