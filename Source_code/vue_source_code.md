@@ -1,19 +1,12 @@
-### vuex
-1. 当store的状态变化，对应组件也会更新
-2. 改变store状态的唯一途径就是commit和mutation
-3. 8单一状态树，一个对象包含全部的应用层级状态，每个应用只包含一个store实例
-从store实例中读取状态最简单的方法就是在computed返回
-当一个组件含有多个状态时，使用mapstate帮助生成计算属性
-不需要将所有状态都放在vuex，如果有些状态严格属于单个组件，还是作为局部组件比较好
-Getter接受state作为第一个参数，从state中派生一些状态，可以用store.getters访问属性或者函数，也可以接受其他getter作为第二个参数。
-mapGetter函数将store的getter映射到局部计算属性
-改变状态的方法mutation，有一个type和handler，这个handler就是实际进行状态更改的地方，接受state作为第一个参数。要唤醒handler，需要以相应的type调用store.commit
-可以在commit中加入额外的参数，既mutation的payload，payload是一个对象，可以包含多个字段并且记录的mutation会更易读。
-提交mutation的另一种方式是直接使用包含type属性的对象，此时整个对象都作为payload创给mutation函数，因此handler不变。（type:’function’或者直接’function)
-因为store状态是响应式的，代表着更新state时，组件也会更新，所以store中要初始化好所有属性，添加新属性需要使用set或者用新对象代替老对象。
-Mutation必须是同步函数，任何在回调函数中进行的状态的改变都是不可追踪的
-Action提交的是mutation，可以包含任意异步操作，接受一个与store实例具有相同方法和属性的context对象，再用context.commit来提交commit
-
+### vue常见api
+1. Mixin：全局注册一个混入，影响注册后的每一个vue实例，一般验证的函数可以写在里面
+2. Method: 自动混入到vue实例中，直接通过实例访问这些方法，this自动绑定为vue实例
+3. Computed：this自动绑定为vue实例，结果会缓存，除非依赖的响应式属性变化才会重新计算
+4. Watch：观察vue实例的一个表达式或者一个函数计算结果的变化，回调函数得到的参数为新值和旧值。deep选项监听对象内部值，immediate选项以表达式当前值触发回调
+5. Emit：触发当前实例的事件，附加参数会传给监听器回调
+6. mount：如果vue实例化的时候没有收到el选项，则处于未挂载状态，没有关联DOM元素，可以用mount手动挂载
+7. slot插槽：可以插入任何模板代码，HTML，组件。使用数据时，可以使用本身的实例数据，但是不能访问父级。子作用域和父作用域。
+8. Ref: 给元素或子组件注册引用信息，引用信息将会注册在父组件的$refs对象上。如果在普通的DOM元素上使用，引用指向的就是DOM元素，如果用在子组件上，引用就指向组件实例。
 
 # Diff算法
 
@@ -26,16 +19,17 @@ Action提交的是mutation，可以包含任意异步操作，接受一个与sto
 4. 调用patch函数，比较新旧节点，得到差异结果
 5. 一次性对DOM进行批量操作
 
+```javascript
 <div>
     <p>123</p>
 </div>
-变成
 var Vnode = {
     tag: 'div',
     Children: [
         {tag: 'p', text: '123'}
     ]
 }
+```
 Vnode主要属性，tagName，props（包括id，class），children
 
 
@@ -212,6 +206,7 @@ view改变model的过程
 靠v-model，获取v-model对应的属性值，赋给元素的value，设置watcher，变化触发，通知属性更改
 
 # vue数组劫持
+```javascript
 const arrayProto = Array.prototype
 const arrayMethods = Object.create(arrayProto)
 ;[
@@ -238,6 +233,7 @@ function protoAugment (target,src) {
 // 调用
 let obarr = []
 protoAugment(obarr, arrayMethods)
+```
 
 
 subs:[watch1:[],watch2:[]]
