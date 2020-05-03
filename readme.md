@@ -11,6 +11,8 @@
 * [Javascript手写](https://github.com/zhousiyaoyao/FE/blob/master/JS/js.md)
 * [Javascript基础](https://github.com/zhousiyaoyao/FE/blob/master/JS/basic.md)
 * [TypeScript](https://github.com/zhousiyaoyao/FE/blob/master/JS/TS.md)
+### 面经
+* [一天n道面经](https://github.com/zhousiyaoyao/FE/blob/master/JS/interview.md)
 ### 计算机基础总结
 * [计算机网络](https://github.com/zhousiyaoyao/FE/blob/master/JS/network.md)
 ### 框架总结
