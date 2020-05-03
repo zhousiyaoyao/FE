@@ -1,5 +1,50 @@
 # 目录
+* [第187场周赛](#第187场周赛)
 * [第25场双周赛](#第25场双周赛)
+
+### 第187场周赛
+结果惨淡，2087/3107, 还是AC两道，第三道超时，果然不能全搞暴力，还有提交错误会降低排名，学到了
+* 5400
+```javascript
+var destCity = function(paths) {
+    var map = new Map()
+    for(var i = 0; i < paths.length; i++){
+         map.set(paths[i][0],paths[i][1])
+    }
+    for(var [key,value] of map){
+        if(!map.has(value)){
+            return value
+        }
+    }
+};
+```
+
+* 5401
+```javascript
+var kLengthApart = function(nums, k) {
+    var index = []
+    for(var i = 0 ; i < nums.length; i++){
+        if(nums[i] === 1){
+            index.push(i)
+        }
+    }
+    for(var i = 0; i < index.length - 1; i++){
+        if(index[i+1] - index[i] <= k){
+            return false
+        }
+    }
+    return true
+};
+```
+* 5402
+```javascript
+
+```
+* 5403
+```javascript
+
+```
+* 
 
 ### 第25场双周赛
 第一次参加， 1043/1832，AC两道，第三道脑子卡了，第四道动态规划直接放弃
@@ -81,7 +126,7 @@ var checkIfCanBreak = function(s1, s2) {
     return false
 };
 ```
-* 5387
+* 5387 看不懂答案，先空着
 ```javascript
 
 ```

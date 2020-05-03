@@ -1,37 +1,19 @@
-var checkIfCanBreak = function(s1,s2) {
-    var dfs = function(s, path, res){
-        if(path.length === 3){
-            res.push(path)
-            return 
-        }
-        for(var i = 0; i < s.length; i++){
-           dfs(s.slice(0,i).concat(s.slice(i+1)) , path+s[i], res)
-        }
-    }
+var longestSubarray = function(nums, limit) {
     var res = []
-    var res1 = []
-    dfs(s1,'',res)
-    dfs(s2,'',res1)
-    res.sort()
-    res1.sort()
-    console.log(res)
-    console.log(res1)
-    for(var i = 0; i < res.length; i++){
-        var flag = true
-        for(var j = 0; j < res[0].length; j++){
-            flag &= (res[i].split('')[j] >= res1[i].split('')[j])
-        }
-        if(flag){
-            return true
-        }
-        var flag = true
-        for(var j = 0; j < res[0].length; j++){
-            flag &= (res[i].split('')[j] <= res1[i].split('')[j])
-        }
-        if(flag){
-            return true
+    for(var i = 0; i < nums.length - 1; i++){
+        for(var j = i+1; j < nums.length; j++){
+            res.push(nums.slice(i,j+1))
         }
     }
-    return false
+    var max_len = 0
+    console.log(res)
+    for(var i = 0;  i < res.length; i++){
+        if(Math.max(...res[i]) - Math.min(...res[i]) <= limit){
+            if(max_len < res[i].length){
+                max_len = res[i].length
+            }
+        }
+    }
+    return max_len
 };
-console.log(checkIfCanBreak('leetcodee','interview'))
+console.log(longestSubarray([10,1,2,4,7,2],5))
