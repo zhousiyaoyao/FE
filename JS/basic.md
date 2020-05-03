@@ -25,6 +25,9 @@
 * [24.重绘和回流](#重绘和回流)
 * [25.前端测试](#前端测试)
 * [26.发布订阅](#发布订阅)
+* [27.异步](#异步)
+* [28.类数组](#类数组)
+* [29.this](#this)
 
 ### 浏览器缓存
 缓存优点：减少数据冗余传输，缓解网络瓶颈，降低服务器要求，降低请求距离时延
@@ -376,4 +379,114 @@ ps.publish('show-money', 1000000)
 ```
 定义一个pubSub函数，并在函数内将回调函数存储到本地，提供subscribe方法注册回调函数，用publish方法来遍历并使用数据来调用所有注册过的回调函数
 
-### 
+### 异步
+JS是单线程环境，一次只能完成一个任务，多个任务就需要排队，前一个完成，再后一个，所以如果一个任务时间很长，后面必须排队，浏览器就会无响应卡死，所以js提供很多异步方案，异步任务不会堵塞，前一个异步任务没有执行完，后面的任务也可以执行，在服务器端，异步模式是唯一模式，如果同步执行http请求，服务器会失去响应。常见的解决方案有回调函数，事件监听，发布订阅，promise，生成器，async/await六种。基本都是相当于一个异步任务分成2部分，执行完第一部分，去做其他任务，等时机成熟了，再执行第二段，后面的任务不用等第二段任务结束，就可以执行。
+JS最初用途是实现用户与浏览器的交互，所以设置为单线程，同步要排队，卡在那里，异步不用排队，可以先去做点别的。如果js是同步的，对用户而言就会阻塞卡死，用户体验很差。JS通过事件循环机制（event loop）实现异步。虽然js是单线程，但浏览器内核是多线程，onclick，setTimeout，ajax等异步操作都是内核webcore来执行的。异步操作会将相关回调添加到任务队列中。
+Js执行机制：
+先判断代码是同步还是异步，同步进入主进程，异步进入event table
+异步任务在event table注册函数，满足触发条件后，被推入event queue
+同步任务进入主线程之后一直执行，直到主线程空闲时，才会去event queue查看是否有可执行的异步任务，如果有就推进主进程中。
+三步循环执行，就是event loop
+同步可以保证顺序，但是会阻塞，异步可以解决阻塞，但会改变顺序
+
+Promise
+	出现的原因：出现之前，处理一个异步网络请求，需要根据第一个请求的结果，执行第二个网络请求，然后继续下一个，造成回调地狱，代码臃肿，可读性差，耦合度高，复用性差，bug多。为了解决异步嵌套问题，有了promise，业界还有Q和bluebird解决方案。
+	Promise是异步编程的解决方案，比传统的异步解决方案回调函数和事件更加合理和强大，写法 
+new Promise(请求1)
+.then(请求2(请求结果1))
+.then(请求3(请求结果2))
+.catch(处理异常(异常信息))
+Promise.resolve(value), 如果value是promise对象，则该对象作为Promise.resolve方法的返回值返回。如果value是thenable对象，返回Promise对象跟随thenable对象的最终状态。如果value是其他情况，返回一个promise对象。构造函数内部的代码是立即执行的
+Promise.reject，返回的promise对象的状态为rejected
+Promise.prototype.then，实例方法，为promise注册回调函数，一定要return一个结果或者一个新的promise对象，才可以让接下来的then回调接受
+Promise.prototype.catch，实例方法，捕获异常，注册之前的回调抛出的异常信息
+Promise.race，多个promise任务同时执行，返回最先执行结束的promise任务的结果，不管这个promise结果是成功还是失败
+Promise.all，多个promise任务同时执行，如果全部执行成功，以数组的形式返回所有的执行结果，有一个rejected，就只返回rejected任务的结果
+Promise对象的三个状态：
+	Pending，异步任务正在执行
+	Resolved（fulfilled） ，异步任务执行成功
+	Rejected，异步任务执行失败
+状态一旦改变，便不能再被更改为其他状态
+第一步：Promise初始化的两种方式：
+	new Promise（fn）
+	Promise.resolve（fn）
+第二步：调用上一步返回的promise对象的then方法，注册回调函数，回调函数可以有一个参数或者没有参数，如果then中的回调函数依赖上一步的返回结果，要带参数
+第三步：注册catch异常处理函数，处理前面回调中可能抛出的异常
+缺点无法取消Promise，如果出现某种情况是这个任务悬而未决，无法从外部停止它的进程，错误需要通过回调函数捕获，容易被无意忽略，单一值，只能有一个完成值或者拒绝利用，如果想收到多个结果只能用数组或者对象封装传递结果。性能的性能慢一些对比回调。
+Promise和回调的关系：
+	Promise不是回调的代替，而是在回调和后面的代码直接提供了中间机制来管理回调，监听request，得到通知后，根据情况进行回调，一旦决议，就保持在这个状态，就变成immutable value
+ajax(url)
+ .then(res => {
+     console.log(res)
+     return ajax(url1)
+ }).then(res => {
+     console.log(res)
+     return ajax(url2)
+ }).then(res => console.log(res))
+ 
+
+
+生成器，yield，迭代器
+Yield关键字，用来生成es6的生成器，yield暂停函数，next启动函数，返回yield后的表达式结果，yield本身没有返回值或者返回undefined，next可以带参数，会被当做上一个yield表达式的返回值。
+一个函数function前或后有个*表示这个函数就是生成器，该函数只运行函数的一部分，剩余部分通过next控制执行。生成器是一种返回迭代器的函数。可以控制函数的执行
+迭代器是一种对象，具有一些专门为迭代过程设计的专有接口，所有迭代器对象都有一个next方法，每次调用都返回一个结果对象。next（）返回两个参数，done和value，done为false表示函数没有执行完毕，没有更多可返回数据，value表示函数yield后面的值，到最后done为true，value是return的值
+可迭代对象具有Symbol.iterator属性，通过指定的函数可以返回一个作用于附属对象的迭代器。比如集合对象（数组，set或map）和字符串，通过生成器创建的迭代器都是可迭代对象
+for-of循环每次都会调用可迭代对象的迭代器接口的next（）方法，并将返回结果对象的value属性存储在一个变量，持续到返回对象属性值为true。
+一般next调用要比yield多一个，第一个next会启动一个生成器，运行到第一个yield，每个yield表示：这里我应该插入什么值，然后下一个next回答。插入之后，yield后面的表达式就不用看了，比如x=yeild 2，next（3)，结果就是3，value就是插入上一个yield后，yield后面的表达式的值
+function *foo() {
+   var x = yield 2;
+   console.log(x)
+   var y = x * (yield x + 1)
+   console.log(y)
+   console.log( x, y );
+   return x + y
+}
+ 
+var it = foo();
+it.next()// {value: 2, done: false}
+it.next(4)// {value：5, done: false}
+it.next(3)// {value: 16, done: true}
+ 
+Foo是生成器, it是foo的迭代器，可以用生成器创建可迭代对象
+手动迭代生成器函数很麻烦，一般会配合co库使用，更优雅的编写非阻塞代码
+function *fetch() {
+ yield ajax(url, () => {})
+ yield ajax(url1, () => {})
+ yield ajax(url2, () => {})
+}
+let it = fetch()
+let result1 = it.next()
+let result2 = it.next()
+let result3 = it.next()
+
+async 和 await
+	编写异步或者非阻塞代码的最终解决方案，建立在promise之上，可读性和间接性更好，可以轻松地达成之前使用生成器和co函数所做到的工作。使异步代码看上去像同步代码，将生成器函数和自动执行器包装在一个函数里。
+	用try和catch捕获异常
+	await关键字只能在async方法中使用
+	使用async申明函数会隐式返回一个promise
+	Await会等待右侧表达式返回之后，再执行下一行
+	async就是生成器函数的语法糖，只是*变成了async，yeild变成了await，不用实现promise和generator的结合，async执行时，一旦遇到await，就会先返回，等异步操作完成，再接着执行函数体内后面的语句，并返回一个promise对象。
+	正常情况下，await后面是一个promise对象，如果不是，会转成一个立即resolve的promise对象，如果这个对象reject，reject的参数会被catch方法的回调接受到。
+	对比生成器的优点，内置执行器，免去手动迭代生成器，更好的语义，yield后面只能是thunk函数或promise对象，await后面是promise对象或者原始类型的值。async返回值是promise对象，而生成器函数式iterator对象。
+	注意，await后面的promise对象，可能是rejected，所以最好放在try catch中。对个await命令后面的异步操作，如果不存在继发关系，最好同时触发
+缺点就是将异步代码改造成了同步代码，如果多个异步代码没有依赖性却用了await会有性能的降低，如果没有依赖性完全可以使用promise.all
+
+### 类数组
+类数组转数组可以用
+Array.prototype.slice.call(arraylike) 
+Array.prototype.splice.call(arraylike,0)
+Array.from(arraylike)
+Array.prototype.concat.apply([],arraylike)
+[...arguments]，可以直接转成数组 
+Arguments对象就是类数组对象，经常用第一种方法转成数组
+Length属性返回实参的长度，function的length返回形参长度
+Callee属性可以调用函数自身
+
+### this
+This永远指向最后调用它的那个对象，a()等于window.a()，window.a.fn()算对象a的调用
+如何改变this的指向：
+使用箭头函数
+函数内部使用_this = this
+使用apply，call，bind
+	匿名函数的this永远指向window
+	This作为对象调用，指向该对象，作为函数调用，指向全局window，作为构造函数调用，指向当前实例对象，作为call与apply调用，指向当前object
