@@ -17,6 +17,7 @@
 * [16. 手写eventEmitter](#16-手写eventEmitter)
 * [17. 数组拍平](#17-数组拍平)
 * [18. 数组乱序](#18-数组乱序)
+* [19. 扁平数组和树](#19-扁平数组和树)
 
 
 
@@ -563,5 +564,61 @@ function random_sort(arr){
         arr.splice(index,1)
     }
     return result
+}
+```
+
+### 19. 扁平数组和树
+```javascript
+var arr = [{id: 1, pid: '-1'},{id: 11, pid: '1'},{id: 12, pid: '1'}]
+function listToTree(list) {
+    var map = {}, node, tree= [], i;
+    for (i = 0; i < list.length; i ++) {
+        map[list[i].id] = list[i]; 
+        list[i].children = []; 
+    }
+    for (i = 0; i < list.length; i += 1) {
+        node = list[i];
+        if (node.pid !== '-1') {
+            map[node.pid].children.push(node);
+        } else {
+            tree.push(node);
+        }
+    }
+    return tree;
+}
+```
+```javascript
+function listToTreeWithLevel(list, parent, level) {
+    var out = []
+    for (var node of list) {  
+            if (node.pid == parent) {
+                node.level = level;
+                var children = listToTreeWithLevel(list, node.id, level + 1)
+                if (children.length) {
+                    node.children = children
+                }
+                out.push(node)
+            }
+    }
+    return out
+}
+
+listToTreeWithLevel(arr, '-1', 0)
+```
+```javascript
+function treeToList(tree) {
+  var queen = [];
+  var out = [];
+  queen = queen.concat(tree);
+  while(queen.length) {
+      var first = queen.shift();
+    if (first.children) {
+        queen = queen.concat(first.children)
+      delete first['children'];
+    }
+    
+    out.push(first);
+  }
+  return out;
 }
 ```
