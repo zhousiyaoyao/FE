@@ -463,6 +463,20 @@ console.log(operate(0)) // => 相当于 div2(mul3(add1(add1(0))))
 ```
 ### 15. 手写链式调用
 ```javascript
+Function.prototype.method = function(name, fn){
+  this.prototype[name] = fn
+  return this
+}
+var a = function(){
+
+}
+a.method('start', function(){
+
+}).
+method('end', function(){
+
+});
+
 function add(num) {
 	var nums = num;
 	function twwo(num){
