@@ -28,6 +28,7 @@
 * [27.异步](#异步)
 * [28.类数组](#类数组)
 * [29.this](#this)
+* [30.nextTick](#nextTick)
 
 ### 浏览器缓存
 缓存优点：减少数据冗余传输，缓解网络瓶颈，降低服务器要求，降低请求距离时延
@@ -490,3 +491,11 @@ This永远指向最后调用它的那个对象，a()等于window.a()，window.a.
 使用apply，call，bind
 	匿名函数的this永远指向window
 	This作为对象调用，指向该对象，作为函数调用，指向全局window，作为构造函数调用，指向当前实例对象，作为call与apply调用，指向当前object
+
+### nextTick
+在下次 DOM 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM.
+1. vue用异步队列的方式来控制dom的更新和nexttick回调先后执行（把nexttick当成dom更新宏任务的微任务）
+2. vue的降级策略：开始用promise的then兼容性，mutationObserver有bug。所以只能降级到宏任务
+3. setImmediate第一优先级，只有IE和nodejs支持，MessageChannel第二优先级，但也有兼容性问题，所以一般用settimeout，虽然其有执行延迟，可能造成多次渲染
+4. 如果同一个 watcher 被多次触发，只会被推入到队列中一次
+5. process.nextTick属于微任务，但是作为微任务第一个执行，所以如果希望异步任务尽可能快，就用它
