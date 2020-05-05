@@ -18,7 +18,8 @@
 * [17. 数组拍平](#17-数组拍平)
 * [18. 数组乱序](#18-数组乱序)
 * [19. 扁平数组和树](#19-扁平数组和树)
-
+* [20. 遍历dom树](#20-遍历dom树)
+* [21. 实现getElementById](#21-实现getElementById)
 
 
 ### 1. 实现new
@@ -620,5 +621,98 @@ function treeToList(tree) {
     out.push(first);
   }
   return out;
+}
+```
+
+### 20.遍历dom树
+```javascript
+ var list = []; //声明一个数组list,用来存放元素的后代元素.
+ function getChildrens(ele){
+        var children = ele.children;
+        for(var i = 0 ; i < children.length; i++){
+          var child = children[i]; //child就是这个ele函数的一个个的子元素.
+          list.push(child); //把求出来的子元素存进list数组.
+          //求出来的子元素,调用函数求他的子元素.
+          getChildrens(child);
+        }
+      }
+    //求body的所有后代. //遍历整个dom树.
+  getChildrens(document.body);
+  console.log(list);
+```
+
+### 21.实现getElementById
+
+```javascript
+const cusGetElementByIdByDFS = function (parentNode, id) {
+    // 深度优先, 递归实现
+    if (parentNode) {
+        let target = null;
+        const children = Array.from(parentNode.children);
+        if (parentNode.id === id) {
+            return parentNode;
+        }
+        for (let i = 0; i < children.length; i++) {
+            target = cusGetElementByIdByDFS(children[i], id);
+            if (target) {
+                return target;
+            }
+        }
+    }
+    return null;
+}
+
+const cusGetElementByIdByDFS2 = function (parentNode, id) {
+    if (!parentNode) {
+        return null;
+    }
+    // 深度优先, 非递归实现， 使用栈
+    let stack = [];
+    if (parentNode.id === id) {
+        return parentNode;
+    }
+    for (let i = parentNode.children.length; i > 0; i--) {
+        stack.push(parentNode.children[i - 1]);
+    }
+    while (stack.length) {
+        let node = stack.pop();
+        if (node.id === id) {
+            return node;
+        } else {
+            if (node.children.length > 0) {
+                stack = Array.from(node.children).concat(stack);
+            }
+        }
+    }
+}
+
+const cusGetElementByIdByBFS = function (parentNode, id) {
+    // 广度优先 非递归实现
+    // 队列的思想: 采用出队的方式遍历节点，如果遍历到的节点有子节点，则将子节点入队
+    const layer = []; // 按照顺序存放每个层级的每个节点
+    if (parentNode) {
+        // 初始化layer
+        // 节点深度从父节点开始算起
+        layer.push({
+            node: parentNode,
+            depth: 1
+        });
+        while (layer.length > 0) {
+            const root = layer.shift(); // 出队
+            if (root.node.id === id) {
+                return root; // 包括对应节点和节点深度
+            } else {
+                if (root.node.children.length > 0) {
+                    Array.from(root.node.children).forEach(node => {
+                        layer.push({
+                            node,
+                            depth: root.depth + 1
+                        })
+                    })
+                }
+            }
+        }
+    }
+    return null;
 }
 ```
