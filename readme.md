@@ -31,3 +31,4 @@
 * [JavaScript高级程序设计（第3版）](https://github.com/zhousiyaoyao/FE/blob/master/Books/gaocheng.md)
 * [JavaScript设计模式](https://github.com/zhousiyaoyao/FE/blob/master/Books/design.md)
 * [JavaScript DOM编程艺术](https://github.com/zhousiyaoyao/FE/blob/master/Books/dom.md)
+* [深入浅出Nodejs](https://github.com/zhousiyaoyao/FE/blob/master/Books/node.md)
