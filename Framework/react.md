@@ -1,3 +1,84 @@
+### hox
+* 只有一个API
+* 拥抱react hooks和typescript
+* 支持多数据源，随用随取
+
+```javascript
+// 定义Model
+import { createModel } from 'hox';
+function useCounter(){
+	const [count, setCount] = useState(0)
+	const decrement = () => setCount(count - 1)
+	const increment = () => setCount(count + 1)
+	return {
+		count,
+		decrement,
+		increment
+	};
+}
+export default createModel(useCounter)
+
+// 使用Model
+import { useCounterModel } from "../models/useCounterModel"
+function App(props){
+	const counter = useCounterModel()
+	return (
+		<div>
+			<p>{counter.count}</p>
+			<button onClick = {counter.increment}>Increment</button>
+		</div>
+	)
+}
+
+// model之间相互依赖
+import { useCounterModel } from "./useCounterModel"
+export function useCounterModel(){
+	const counter = useCounterModel()
+	return {
+		...counter,
+		count: counter.count * 2
+	}
+}
+
+// 只读不订阅更新
+import { useCounterModel } from "./useCounterModel"
+export function useCounterDouble(){
+	const counter = useCounterModel.data
+	return {
+		...counter,
+		count: counter.count * 2
+	}
+}
+
+// demo
+import { createModel } from 'hox'
+function useCounter(){
+	const [count, setCount] = useState(0)
+	const decrement = () => setCount(count - 1)
+	const increment = () => setCount(count + 1)
+	return (
+		count,
+		decrement,
+		increment
+	)
+}
+export default createModel(useCounter)
+
+import { useCounterModel } from "./useCounterModel"
+export function CountApp(){
+	const {count, increment, decrement} = useCounterModel()
+	return(
+		<div>
+			count: {count}
+			<button onClick={increment}>自增</button>
+			<button onClick={decrement}>自减</button>
+		</div>
+	)
+}
+```
+
+
+### 基础知识
 核心思想
 	将页面拆分为一堆独立的，可复用的组件，用自顶向下的单向数据流的形式将组件串联起来
 	教程知识

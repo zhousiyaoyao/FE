@@ -808,4 +808,20 @@ Promise.race(promises)
 .then(
   (result) => console.log(result),
   (err) => console.log(err))
+
+function resolveAfter(ms, value = undefined){
+  return new Promise((resolve, reject) => {
+    setTimeout(() => resolve(value), ms)
+  })
+}
+function timeout(timeoutInMs, promise){
+  return Promise.race([
+    promise,
+    resolveAfter(timeoutInMs, Promise.reject(new Error('Operation timed out')))
+  ])
+}
+timeout(200, resolveAfter(100, 'Result!'))
+.then(result => console.log(result))
+timeout(200, resolveAfter(100, 'Result!'))
+.catch(result => console.log(result))
 ```
