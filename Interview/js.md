@@ -20,6 +20,8 @@
 * [19. 扁平数组和树](#19-扁平数组和树)
 * [20. 遍历dom树](#20-遍历dom树)
 * [21. 实现getElementById](#21-实现getElementById)
+* [22. 实现promise all](#22-实现promise_all)
+* [23. 实现promise race](#23-实现promise_race)
 
 
 ### 1. 实现new
@@ -715,4 +717,95 @@ const cusGetElementByIdByBFS = function (parentNode, id) {
     }
     return null;
 }
+```
+
+### 22.实现promise_all
+```javascript
+function all(iterable){
+  return new Promise((resolve, reject) => {
+    let index = 0;
+    for(var promise of iterable){
+      const currentIndex = index
+      promise.then(
+        (value) => {
+          if(anErrorOccurred) return
+          result[currentIndex] = value
+          count++
+          if(count === result.length){
+            resolve(result);
+          }
+        },
+        (err) => {
+          if(anErrorOccurred) return
+          anErrorOccurred = true
+          reject(err)
+        }
+      )
+      index++
+    }
+    if(index === 0){
+      resolve([]),
+      return
+    }
+    let count = 0
+    let anErrorOccurred = false
+    const result = new Array(index)
+  })
+}
+
+const promises = [Promise.resolve('a'),Promise.resolve('b'),Promise.resolve('c')]
+Promise.all(promises).then((arr) => {
+  console.log(arr)
+})
+const promises = [Promise.reject('error')]
+Promise.all(promises).catch((err) => {
+  console.log(err)
+})
+
+function downloadText(url){
+  return fetch(url)
+  .then((response) => {
+    if(!response.ok){
+      throw new Error(response.status.Text)
+    }
+    return response.text()
+  })
+}
+const urls = ['1','2']
+const promises = urls.map((url) => downloadText(url))
+Promise.all(promises)
+.then(
+  (arr) => console.log(arr)
+)
+```
+
+### 23.实现promise_race
+```javascript
+function race(iterable){
+  return new Promise((resolve, reject) => {
+    for(const promise of iterable){
+      promise.then(
+        (value) => {
+          if(settlementOccurred) return
+          settlementOccurred = true
+          resolve(value)
+        },
+        (err) => {
+          if(settlementOccurred) return
+          settlementOccurred = true
+          reject(err)
+        }
+      )
+    }
+    let settlementOccurred = false
+  })
+}
+const promises = [
+  new Promise((resolve, reject) => setTimeout(() => resolve('result'), 100)),
+  new Promise((resolve, reject) => setTimeout(() => resolve('ERROR'), 200))
+]
+Promise.race(promises)
+.then(
+  (result) => console.log(result),
+  (err) => console.log(err))
 ```
