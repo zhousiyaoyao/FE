@@ -1,4 +1,6 @@
-# 前端基础实践
+# 前端面试大全
+### 目的
+面试前看一看，不看就忘了
 ### 算法总结
 * [Leetcode hot 100](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/leetcode_hot_100.js)
 * [力扣竞赛](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/competition.md)
