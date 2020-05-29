@@ -1,3 +1,7 @@
+### vue3.0
+option api不方便做tree-shaking而且拆的太碎了, composition api更好
+
+
 ### vue常见api
 1. Mixin：全局注册一个混入，影响注册后的每一个vue实例，一般验证的函数可以写在里面
 2. Method: 自动混入到vue实例中，直接通过实例访问这些方法，this自动绑定为vue实例

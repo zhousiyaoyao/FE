@@ -1,4 +1,4 @@
-// 快排
+// 快排 不稳定
 function quickSort(array, start, end) {
 
     let length = array.length;

@@ -2,7 +2,7 @@
 ### 目的
 面试前看一看，不看就忘了
 ### 算法总结
-* [Leetcode hot 100](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/leetcode_hot_100.js)
+* [Leetcode hot 100](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/leetcode.md)
 * [力扣竞赛](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/competition.md)
 * [ScriotOj](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/ScriptOj.js)
 * [树的遍历](https://github.com/zhousiyaoyao/FE/blob/master/Algorithm/tree_iterate.js)
@@ -31,6 +31,7 @@
 * [Webpack](https://github.com/zhousiyaoyao/webpack/blob/master/demo/build/webpack.config.js)
 ### 书籍总结
 * [JavaScript高级程序设计（第3版）](https://github.com/zhousiyaoyao/FE/blob/master/Books/gaocheng.md)
+* [深入理解ES6]
 * [JavaScript设计模式](https://github.com/zhousiyaoyao/FE/blob/master/Books/design.md)
 * [JavaScript DOM编程艺术](https://github.com/zhousiyaoyao/FE/blob/master/Books/dom.md)
 * [深入浅出Nodejs](https://github.com/zhousiyaoyao/FE/blob/master/Books/node.md)
