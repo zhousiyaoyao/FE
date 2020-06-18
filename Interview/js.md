@@ -22,9 +22,17 @@
 * [21. 实现getElementById](#21-实现getElementById)
 * [22. 实现promise all](#22-实现promise_all)
 * [23. 实现promise race](#23-实现promise_race)
+* [24. 手写ajax原生请求](#24-手写ajax原生请求)
+* [25. 千分位转换](#25-千分位转换)
+* [26. promise_all并发限制](#26-promise_all并发限制)
+* [27. promise控制并发面试题](#27-promise控制并发面试题)
 
 
 ### 1. 实现new
+1. 创建新对象
+2. prototype连接
+3. 将这个对象绑定到构造函数的this中
+4. 如果函数没有返回其他对象，直接返回这个对象，否则返回result对象
 ```javascript
 function new_new(){
     let obj = {}
@@ -33,24 +41,39 @@ function new_new(){
     var result = Constructor.apply(obj, arguments);
     return typeof result === 'object' ? result : obj;
 }
+
 ```
 ### 2. 实现bind
+1. 改变原函数this的指向
+2. 返回原函数的拷贝
+3. new调用时，thisArg参数无效，new操作符修改的this优先级更高
 ```javascript
 Function.prototype.bind_bind = function (context, ...bindArgs) {
-	let _me = this
-    function Fn() {}
-    let fBound = function(...args) {
-        return _me.apply(this instanceof fBound ? this : context, bindArgs.concat(args))
-    }
-    Fn.prototype = this.prototype
-    fBound.prototype = new Fn();
-    return fBound
+	let self = this 
+  let fBound = function(...args) {
+      return self.apply(this instanceof self ? this : context, bindArgs.concat(args))
+  }
+  function Fn() {}
+  Fn.prototype = this.prototype
+  fBound.prototype = new Fn();
+  // fBound.prototype = this.prototype ，需要一个空函数作为中间人，防止fBound修改，原函数也修改
+  return fBound
 }
+function foo(name) {
+    this.name = name;
+} // self的引用就是foo
+var obj = {};
+var bar = foo.myBind(obj); // bar就是fBound
+bar('Jack');  // 此时this指向全局变量，判断为false，绑定函数的this指向context
+console.log(obj.name);  // Jack
+var alice = new bar('Alice'); // 此时this指向new表达式返回的对象alice，判断为true，得到的值还是指定的对象，所以要原型连接
+console.log(obj.name);  // Jack
+console.log(alice.name);    // Alice
 ```
 
 ### 3. 实现apply
 ```javascript
-Function.prototype.apply_apply = function (context, arr) {
+Function.prototype.apply_apply = function (context) {
     context = context ? Object(context) : window
     context.fn = this
     let args = [...arguments][1]
@@ -65,7 +88,7 @@ Function.prototype.apply_apply = function (context, arr) {
 ### 4. 实现call
 ```javascript 
 Function.prototype.call_call = function(context){
-    context = context ? Object(context) : window
+    context = context ? Object(context) : window //判断是否为null或者undefined,同时考虑传递参数不是对象情况
     context.fn = this
     let args = [...arguments].slice(1)
     let r = context.fn(args)
@@ -76,13 +99,12 @@ Function.prototype.call_call = function(context){
 ### 5. 实现instanceof
 ```javascript
 function instance_of(L, R) {
-    var prototype = R.prototype
     L = L.__proto__
     while (true) { 
      if (L === null) {
        return false
      }
-     if (prototype === L) {
+     if (L === R.prototype) {
        return true
      } 
      L = L.__proto__
@@ -90,6 +112,12 @@ function instance_of(L, R) {
 }
 ```
 ### 6. 实现promise
+1. 自身属性value，reason，status，resolve的callback数组，reject的callback数组
+2. resolve方法，status为pending时，赋值value，status，执行resolve全部方法
+3. reject方法，status为pending时，赋值reason，status，执行reject全部方法
+4. 执行执行器函数
+5. 原型上定义then方法，传入onFulfilled和onRejected作为参数
+6. status为resolve，执行onFulfilled，为reject，执行onRejected，为pending时，resolve的数组加入onFulfilled，reject数组加入onRejected
 ```javascript
 function MyPromise(executor){
     let self = this
@@ -340,7 +368,7 @@ inherit(child, parent);
 var child1 = new child('xiaoming','12')
 console.log(child1)
 ```
-### 11. 手写节流
+### 11. 手写防抖
 ```javascript
 //debounce，第一个timeout为null，声明一个timeout为计时器，调用fn，10s内再次访问，重新生成timeout， 10s
 function debounce1(func, wait) {
@@ -397,7 +425,7 @@ function debounce2(func, wait, immediate) {
 	}
 }
 ```
-### 12. 手写防抖
+### 12. 手写节流
 ```javascript
 // 节流 throttle 立即执行，基于时间戳，停止触发后，不会有最后一次
 // 以前时间为0，现在时间减去之前，第一次肯定大于wait，执行，previous变成now，再10s执行一次
@@ -495,6 +523,7 @@ function add(num) {
 console.log(add(1)(2)(3).sum())
 ```
 ### 16. 手写eventEmitter
+
 ```javascript
 var events = (function() {
     var topics = {}
@@ -753,6 +782,25 @@ function all(iterable){
   })
 }
 
+function promise_all(promises){
+  return new Promise(resolve, reject){
+    let len = promises.length
+    let count = 0
+    let res = []
+    for(let i = 0; i < len; i++){
+      Promise.resolve(promises[i]).then((value) => {
+        count++
+        res[i] = value
+        if(count === len){
+          return resolve(res)
+        }
+      }, (reason) => {
+        return reject(reason)
+      })
+    }
+  }
+}
+
 const promises = [Promise.resolve('a'),Promise.resolve('b'),Promise.resolve('c')]
 Promise.all(promises).then((arr) => {
   console.log(arr)
@@ -781,6 +829,18 @@ Promise.all(promises)
 
 ### 23.实现promise_race
 ```javascript
+function promise_race(promises){
+  return new Promise(resolve, reject) => {
+    for(let i = 0; i < promises.length; i++){
+      Promise.resolve(promises[i]).then((value) => {
+        return resolve(value)
+      },(reason) => {
+        return reject(reason)
+      })
+    }
+  }
+}
+
 function race(iterable){
   return new Promise((resolve, reject) => {
     for(const promise of iterable){
@@ -824,4 +884,121 @@ timeout(200, resolveAfter(100, 'Result!'))
 .then(result => console.log(result))
 timeout(200, resolveAfter(100, 'Result!'))
 .catch(result => console.log(result))
+```
+
+### 24.手写ajax原生请求
+```javascript
+const xhr = new XMLHttpRequest()
+xhr.open("GET", 'http://www.zhengshengliang.com:9999/')
+xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+xhr.send(null) // get
+xhr.send("username="+name); // post
+xhr.onreadystatechange = () => {
+  if(xhr.state === 200 && xhr.readyState === 4){
+    console.log(xhr.responseText)
+  }
+}
+```
+
+### 25.千分位转换
+```javascript
+const num = 1234567
+const str = num.toLocaleString()
+console.log(str) // 1,234,567
+// or
+var c = num.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+```
+
+### 26.promise_all并发限制
+并发限制指的时每个时刻并发执行的promise数量是固定的，10w条并发请求，最终的执行结果也一样
+promise不是调用promiseall时执行，而是实例化promise对象的时候执行
+所以要并发限制，只能控制promise的实例化，基本步骤为
+1. 从array第一个元素开始，初始化promise，用一个executing数组保存正在执行的promise
+2. 不断初始化promise，直到limit
+3. 使用promise.race，获得executing中promise的执行情况，当有一个promise执行完毕，继续初始化promise并放入executing中
+4. 所有的promise都执行完毕后调用promise.all返回
+```javascript
+function pool(limit, array, func){
+  let i = 0
+  const ret = [] // promise数组
+  const executing = [] // promise执行数组
+  const enqueue = function () {
+    // 当array为i时，直接resolve
+    if( i === array.length){
+      return Promise.resolve
+    }
+    // 每调用一次enqueue，初始化一个promise
+    const item = array[i++]
+    const p = Promise.resolve().then(() => func(item, array))
+    // 放入promise数组
+    ret.push(p)
+    // promise执行完毕，从executing数组删除
+    const e = p.then(() => executing.splice(executing.indexOf(e), 1))
+    // 放入promise执行数组
+    executing.push(e)
+    // 使用promise.race，当执行数组数量低于limit，实例化新的promise并执行
+    let r = Promise.resolve()
+    if (executing.length >= limit) {
+      r = Promise.race(executing)
+    }
+    // 递归遍历array
+    return r.then(() => enqueue())
+  }
+  return enqueue().then(() => Promise.all(ret))
+}
+```
+
+### 27.promise控制并发面试题
+字节二面致死题，好好学一学
+有一个图片url数组，实现一个方法，要求任何时刻同时下载链接不超过三个，下载完成resolve，失败reject
+```javascript
+function loadImg(url){
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = function(){
+      console.log("加载完成")
+      resolve()
+    }
+    img.onerror = reject
+    img.src = url
+  })
+}
+// 1. 递归法，开三个func递归，每次递归count+1，如果请求完成了，count-1
+function solution1(urls){
+    var count = 0
+    var bao = function(){
+      count++
+      if(urls.length > 0 && count <=3){
+        loadImg(urls.shift()).then(()=>{
+          count--
+        }).then(bao)
+      }
+    }
+    for(var i = 0; i < 3; i++){
+      bao()
+    }
+}
+
+// 2. race递归法
+function solution2(urls, loadImg){
+  let i = 0
+  const ret = []
+  const executing = []
+  const enqueue = function () {
+    if( i === urls.length){
+      return Promise.resolve
+    }
+    const item = urls[i++]
+    const p = Promise.resolve().then(() => loadImg(item, urls))
+    ret.push(p)
+    const e = p.then(() => executing.splice(executing.indexOf(e), 1))
+    executing.push(e)
+    let r = Promise.resolve()
+    if (executing.length >= 3) {
+      r = Promise.race(executing)
+    }
+    return r.then(() => enqueue())
+  }
+  return enqueue().then(() => Promise.all(ret))
+}
 ```

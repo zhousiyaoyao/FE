@@ -1,37 +1,15 @@
-/* 浮动 */
-/* #left{
-    width: 200px;
-    float: left;
-    background-color: yellow;
-}
+.block{
+    position:absolute;
+    animation:barrage 1s linear 5s;
+ }
 
-#right{
-    width: 200px;
-    float: right;
-    background-color: yellow;
-}
-
-#middle{
-    margin-left: 200px;
-    margin-right: 200px
-} */
-#container{
-    position: relative;
-}
-
-#left{
-    position: absolute;
-    width: 200px;
-}
-
-#right{
-    position: absolute;
-    width: 200px;
-    top:0px;
-    right:0px;
-}
-
-#middle{
-    margin-left: 200px;
-    margin-right: 200px;
-}
+ @keyframes barrage{
+    from{
+      left:100%;
+      transform:translateX(0);
+    }
+    to{
+      left:0;
+      transform:translateX(-100%);
+    }
+ }

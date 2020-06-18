@@ -30,6 +30,7 @@
 * [29.this](#this)
 * [30.nextTick](#nextTick)
 * [31.HTTP状态码](#HTTP状态码)
+* [32.简单请求与非简单请求](#简单请求与非简单请求)
 ### 浏览器缓存
 缓存优点：减少数据冗余传输，缓解网络瓶颈，降低服务器要求，降低请求距离时延
 缓存概念：首次发请求，服务器给客户端资源的同时，缓存服务器或本地缓存会保存一份资源副本，下次请求的时候直接使用资源副本
@@ -542,3 +543,8 @@ This永远指向最后调用它的那个对象，a()等于window.a()，window.a.
 503:服务器暂时不可用
 504:网关超时
 505:服务器不支持http版本
+
+### 简单请求与非简单请求
+非简单请求下会发options请求，在跨域之前，进行预检，不带cookie，返回允许的方法，origin和认证信息等
+简单请求：GET，POST或head，application/x-www-form-urlencoded、multipart/form-data、text/plain，Accept、Accept-Language、Content-Language、Content-Type、Last-Event-ID
+除此之外，都是非简单请求
