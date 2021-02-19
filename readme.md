@@ -31,7 +31,6 @@
 * [Webpack](https://github.com/zhousiyaoyao/webpack/blob/master/demo/build/webpack.config.js)
 ### 书籍总结
 * [JavaScript高级程序设计（第3版）](https://github.com/zhousiyaoyao/FE/blob/master/Books/gaocheng.md)
-* [深入理解ES6]
 * [JavaScript设计模式](https://github.com/zhousiyaoyao/FE/blob/master/Books/design.md)
 * [JavaScript DOM编程艺术](https://github.com/zhousiyaoyao/FE/blob/master/Books/dom.md)
 * [深入浅出Nodejs](https://github.com/zhousiyaoyao/FE/blob/master/Books/node.md)
